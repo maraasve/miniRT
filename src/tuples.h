@@ -6,7 +6,7 @@
 /*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 17:07:14 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/07 13:34:27 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/07 17:41:54 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,14 +73,17 @@ void	pixel_put(t_data *data, int x, int y, int color);
 void	init_p_and_env(t_projectile *p, t_env *env);
 int		init_mlx(t_data *data);
 
-//inverting_matrix.c
-float	minor(float grid[3][3], int row, int col, int size);
-float	**submatrix(float grid[3][3], int row, int col, int size);
-float	determinant(float **grid);
+//invert_matrix.c
+float	**submatrix(float **grid, int row, int col, int size);
+float	**allocate_mem_matrix(int size);
+float	determinant(float **grid, int size);
+float	**invert_matrix(float **matrix, int size);
 
 //point.c
 bool	is_point(t_tuple tuple);
 void	create_point(t_tuple *tuple, float x, float y, float z);
+
+//translation.c
 
 //tuples.c
 bool	same_tuple(t_tuple one, t_tuple two);
@@ -100,7 +103,5 @@ float	get_magnitude(t_tuple vector);
 t_tuple	normalize(t_tuple vector);
 float	get_dot_product(t_tuple vector1, t_tuple vector2);
 t_tuple	*get_cross_product(t_tuple vector1, t_tuple vector2);
-
-
 
 #endif

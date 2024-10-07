@@ -1,24 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   inverting_matrix.c                                 :+:      :+:    :+:   */
+/*   invert_matrix.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 12:50:44 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/07 13:44:22 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/07 17:36:00 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tuples.h"
-
-float	determinant(float **grid)
-{
-	float	determinant;
-
-	determinant = grid[0][0] * grid[1][1] - grid[0][1] * grid[1][0];
-	return (determinant);
-}
 
 float	**allocate_mem_matrix(int size)
 {
@@ -42,7 +34,7 @@ float	**allocate_mem_matrix(int size)
 	return (new);
 }
 
-float	**submatrix(float grid[3][3], int row, int col, int size)
+float	**submatrix(float **grid, int row, int col, int size)
 {
 	float	**sub;
 	int		i;
@@ -77,14 +69,72 @@ float	**submatrix(float grid[3][3], int row, int col, int size)
 	return (sub);
 }
 
-float	minor(float grid[3][3], int row, int col, int size)
+float	minor(float **grid, int row, int col, int size)
 {
 	float	**sub;
-	float	minor;
-
+	float	minor_value;
+	
 	sub = submatrix(grid, row, col, size);
 	if (!sub)
-		return (0); //error handling needs work since every nb is a possible outcome
-	minor = determinant(sub);
-	return (minor);
+		return (0); //need to look at this since result can also be 0
+	minor_value = determinant(sub, size - 1);
+	free_matrix(sub, size - 1);
+	return (minor_value);
+}
+
+float	cofactor(float **grid, int row, int col, int size)
+{
+	float	minor_value;
+
+	minor_value = minor(grid, row, col, size);
+	if (row + col % 2)
+		return (-minor_value);
+	return (minor_value);
+}
+
+float determinant(float **grid, int size)
+{
+	float	det;
+	int		col;
+
+	det = 0;
+	if (size == 2)
+		return (grid[0][0] * grid[1][1] - grid[0][1] * grid[1][0]);
+	else
+	{
+		col = 0;
+		while (col < size)
+		{
+			det += grid[0][col] * cofactor(grid, 0, col, size);
+			col++;
+		}
+	}
+	return (det);
+}
+
+float	**invert_matrix(float **matrix, int size)
+{
+	float	det;
+	float	**inverted;
+	int		i;
+	int		j;
+	
+	det = determinant(matrix, size);
+	if (!det)
+		return (NULL);
+	inverted = allocate_mem_matrix(size);
+	if (!inverted)
+		return (NULL);
+	i = 0;
+	while (i < size)
+	{
+		j = 0;
+		while (j < size)
+		{
+			inverted[i][j] = cofactor(matrix, j, i, size) / det;
+			j++;
+		}
+		i++;
+	}
+	return (inverted);
 }

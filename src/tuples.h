@@ -6,7 +6,7 @@
 /*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 17:07:14 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/07 17:41:54 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/07 18:00:52 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,9 @@ float	**submatrix(float **grid, int row, int col, int size);
 float	**allocate_mem_matrix(int size);
 float	determinant(float **grid, int size);
 float	**invert_matrix(float **matrix, int size);
+
+//matrix.c
+t_matrix	create_identity_matrix(void);
 
 //point.c
 bool	is_point(t_tuple tuple);

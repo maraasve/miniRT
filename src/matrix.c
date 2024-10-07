@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   matrix.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
+/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 15:50:25 by marieke           #+#    #+#             */
-/*   Updated: 2024/10/02 17:06:28 by marieke          ###   ########.fr       */
+/*   Updated: 2024/10/07 13:35:02 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,25 +88,25 @@ t_matrix	multiply_matrices(t_matrix one, t_matrix two)
 		}
 		row++;
 	}
+	return (new);
 }
 
 float	multiply_row(float row[4], t_tuple tuple)
 {
-	int	result;
+	float	result;
 
 	result = 0;
 	result += row[0] * tuple.x;
 	result += row[1] * tuple.y;
 	result += row[2] * tuple.z;
 	result += row[3] * tuple.w;
+	return (result);
 }
 
 t_tuple	multiply_matrix_tuple(t_matrix matrix, t_tuple tuple)
 {
 	t_tuple	new;
-	int	row;
-	int	col;
-
+	
 	create_vector(&new, 0, 0, 0);
 	new.x = multiply_row(matrix.grid[0], tuple);
 	new.y = multiply_row(matrix.grid[1], tuple);
@@ -120,8 +120,7 @@ t_matrix	create_identity_matrix(void)
 	t_matrix	identity;
 	int row;
 	int col;
-	int k;
-
+	
 	row = 0;
 	while (row < MS)
 	{
@@ -156,4 +155,5 @@ t_matrix	transpose_matrix(t_matrix matrix)
 		}
 		row++;
 	}
+	return (new);
 }

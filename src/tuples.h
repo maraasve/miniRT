@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tuples.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
+/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 17:07:14 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/02 16:43:03 by marieke          ###   ########.fr       */
+/*   Updated: 2024/10/07 13:34:27 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ t_color	*colors_multiply(t_color one, t_color two);
 
 //free.c
 void	free_mlx(t_data *data);
+void	free_matrix(float **grid, int size);
 
 //image.c
 void	pixel_put(t_data *data, int x, int y, int color);
@@ -71,6 +72,11 @@ void	pixel_put(t_data *data, int x, int y, int color);
 //init.c
 void	init_p_and_env(t_projectile *p, t_env *env);
 int		init_mlx(t_data *data);
+
+//inverting_matrix.c
+float	minor(float grid[3][3], int row, int col, int size);
+float	**submatrix(float grid[3][3], int row, int col, int size);
+float	determinant(float **grid);
 
 //point.c
 bool	is_point(t_tuple tuple);

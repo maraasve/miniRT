@@ -28,11 +28,11 @@ MLX.A       := libmlx.a
 DEBUG_FLAGS := -fsanitize=address -g
 
 ifeq ($(shell uname), Darwin)
-	MLX_L_FLAGS = -Llib/mlx_linux -lmlx -L/usr/X11/lib -lXext -lX11 -framework OpenGL -framework AppKit
-	MLX_C_FLAGS = -I/opt/X11/include -Ilib/mlx_linux
+	MLX_L_FLAGS = -Llib/mlx_linux -lmlx -L/usr/X11/lib -lXext -lX11 -framework OpenGL -framework AppKit -lm
+	MLX_C_FLAGS = -I/opt/X11/include -Ilib/mlx_linux 
 else
-	MLX_L_FLAGS = -Llib/mlx_linux -lmlx -L/usr/lib/X11 -lXext -lX11
-	MLX_C_FLAGS = -I/usr/include -Ilib/mlx_linux
+	MLX_L_FLAGS = -Llib/mlx_linux -lmlx -L/usr/lib/X11 -lXext -lX11 -lm
+	MLX_C_FLAGS = -I/usr/include -Ilib/mlx_linux 
 endif
 
 #---------------------------------------------------------------------------------

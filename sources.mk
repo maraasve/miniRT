@@ -2,6 +2,7 @@ SOURCES = src/colors.c \
 src/free.c \
 src/image.c \
 src/init.c \
+src/inverting_matrix.c \
 src/main.c \
 src/matrix.c \
 src/point.c \

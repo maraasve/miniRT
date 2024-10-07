@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 13:16:49 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/01 13:18:14 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/02 13:27:15 by marieke          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,3 +26,12 @@ bool	equal_float(float a, float b)
 	return (true);
 }
 
+long long	millitimestamp(void)
+{
+	struct timeval	timeval;
+	long long		microtime;
+
+	gettimeofday(&timeval, NULL);
+	microtime = timeval.tv_sec * 1000LL + timeval.tv_usec / 1000;
+	return (microtime);
+}

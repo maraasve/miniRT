@@ -3,70 +3,87 @@
 /*                                                        :::      ::::::::   */
 /*   vector.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 13:16:15 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/01 14:40:48 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/02 15:42:14 by marieke          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tuples.h"
 
-bool	is_vector(float arr[4])
+bool	is_vector(t_tuple tuple)
 {
-	if (arr[w_index] == 0.0)
+	if (tuple.w == 0.0)
 		return (true);
 	return (false);
 }
 
-float	get_magnitude(float vector[4])
+void	create_vector(t_tuple *tuple, float x, float y, float z)
+{
+	tuple->x = x;
+	tuple->y = y;
+	tuple->z = z;
+	tuple->w = 0.0;
+}
+
+t_tuple	scale_vector(t_tuple vector, float scale)
+{
+	t_tuple new;
+
+	new.x = vector.x * scale;
+	new.y = vector.y * scale;
+	new.z = vector.z * scale;
+	new.w = vector.w * scale;
+	return (new);
+}
+
+float	get_magnitude(t_tuple vector)
 {
 	float	magnitude;
 
-	magnitude = sqrtf(powf(vector[x_index], 2) + powf(vector[y_index], 2) \
-				+ powf(vector[z_index], 2) + powf(vector[w_index], 2));
+	magnitude = sqrtf(powf(vector.x, 2) + powf(vector.y, 2) \
+				+ powf(vector.z, 2) + powf(vector.w, 2));
 	return (magnitude);
 }
 
-float	*normalize(float vector[4])
+t_tuple	normalize(t_tuple vector)
 {
-	float	*normalized;
+	t_tuple	normalized;
 	float	magnitude;
-	normalized = malloc(sizeof(float) * 4);
-	if (!normalized)
-		return (NULL);
+
 	magnitude = get_magnitude(vector);
-	normalized[x_index] = vector[x_index] / magnitude;
-	normalized[y_index] = vector[y_index] / magnitude;
-	normalized[z_index] = vector[z_index] / magnitude;
-	normalized[w_index] = vector[w_index] / magnitude;
+	normalized.x = vector.x / magnitude;
+	normalized.y = vector.y / magnitude;
+	normalized.z = vector.z / magnitude;
+	normalized.w = vector.w / magnitude;
 	return (normalized);	
 }
 
-float	get_dot_product(float vector1[4], float vector2[4])
+float	get_dot_product(t_tuple vector1, t_tuple vector2)
 {
 	float	dot_product;
 
-	dot_product = vector1[x_index] * vector2[x_index] \
-				+ vector1[y_index] * vector2[y_index] \
-				+ vector1[z_index] * vector2[z_index] \
-				+ vector1[w_index] * vector2[w_index];
+	dot_product = vector1.x * vector2.x \
+				+ vector1.y * vector2.y \
+				+ vector1.z * vector2.z \
+				+ vector1.w * vector2.w;
 	return (dot_product);
 }
 
-float	*get_cross_product(float vector1[4], float vector2[4])
+t_tuple	*get_cross_product(t_tuple vector1, t_tuple vector2)
 {
-	float	*cross_product;
+	t_tuple	*cross_product;
 
-	cross_product = malloc(sizeof(float) * 4);
+	cross_product = malloc(sizeof(t_tuple));
 	if (!cross_product)
 		return (NULL);
-	cross_product[x_index] = vector1[y_index] * vector2[z_index] \
-							- vector1[z_index] * vector2[y_index];
-	cross_product[y_index] = vector1[z_index] * vector2[x_index] \
-							- vector1[x_index] * vector2[z_index];
-	cross_product[z_index] = vector1[x_index] * vector2[y_index] \
-							- vector1[y_index] * vector2[x_index];
-	cross_product[w_index] = 0.0;
+	cross_product->x = vector1.y* vector2.z \
+							- vector1.z * vector2.y;
+	cross_product->y = vector1.z * vector2.x \
+							- vector1.x * vector2.z;
+	cross_product->z = vector1.x * vector2.y \
+							- vector1.y * vector2.x;
+	cross_product->w = 0.0;
 	return (cross_product);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 17:28:02 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/01 18:03:53 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/02 16:40:34 by marieke          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 # include "tuples.h"
 
-# define WIDTH 20
-# define HEIGHT 10
+# define WIDTH 900
+# define HEIGHT 550
 
 typedef struct s_data
 {
@@ -25,6 +25,13 @@ typedef struct s_data
 	char	*addr;
 	int		line_length;
 	int		bpp;
+	int		endian;
+	void	*mlx;
+	void	*window;
+	void	*image;
+	struct s_projectile	*p;
+	struct s_env			*env;
+
 }t_data;
 
 #endif

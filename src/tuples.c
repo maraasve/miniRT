@@ -3,47 +3,41 @@
 /*                                                        :::      ::::::::   */
 /*   tuples.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 17:05:55 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/01 13:18:53 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/02 12:02:34 by marieke          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tuples.h"
 
-bool	same_tuple(float one[4], float two[4])
+bool	same_tuple(t_tuple one, t_tuple two)
 {
-	if (equal_float(one[x_index], two[x_index]) \
-		&& equal_float(one[y_index], two[z_index]) \
-		&& equal_float(one[z_index], two[z_index]) \
-		&& equal_float(one[w_index], two[w_index]))
+	if (equal_float(one.x, two.x) \
+		&& equal_float(one.y, two.z) \
+		&& equal_float(one.z, two.z) \
+		&& equal_float(one.w, two.w))
 		return (true);
 	return (false);
 }
 
-float	*add_tuple(float tuple1[4], float tuple2[4])
+t_tuple	add_tuple(t_tuple one, t_tuple two)
 {
-	float *new;
-	new = malloc(sizeof(float) * 4);
-	if (!new)
-		return (NULL);
-	new[x_index] = tuple1[x_index] + tuple2[x_index];
-	new[y_index] = tuple1[y_index] + tuple2[y_index];
-	new[z_index] = tuple1[z_index] + tuple2[z_index];
-	new[w_index] = tuple1[w_index] + tuple2[w_index];
+	t_tuple new;
+	new.x = one.x + two.x;
+	new.y = one.y + two.y;
+	new.z = one.z + two.z;
+	new.w = one.w + two.w;
 	return (new);
 }
 
-float	*subtract_tuple(float tuple1[4], float tuple2[4])
+t_tuple	subtract_tuple(t_tuple one, t_tuple two)
 {
-	float *new;
-	new = malloc(sizeof(float) * 4);
-	if (!new)
-		return (NULL);
-	new[x_index] = tuple1[x_index] - tuple2[x_index];
-	new[y_index] = tuple1[y_index] - tuple2[y_index];
-	new[z_index] = tuple1[z_index] - tuple2[z_index];
-	new[w_index] = tuple1[w_index] - tuple2[w_index];
+	t_tuple new;
+	new.x = one.x - two.x;
+	new.y = one.y - two.y;
+	new.z = one.z - two.z;
+	new.w = one.w - two.w;
 	return (new);
 }

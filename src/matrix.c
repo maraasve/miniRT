@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   matrix.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 15:50:25 by marieke           #+#    #+#             */
-/*   Updated: 2024/10/07 13:35:02 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/08 14:48:43 by marieke          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,6 @@ t_tuple	multiply_matrix_tuple(t_matrix matrix, t_tuple tuple)
 {
 	t_tuple	new;
 	
-	create_vector(&new, 0, 0, 0);
 	new.x = multiply_row(matrix.grid[0], tuple);
 	new.y = multiply_row(matrix.grid[1], tuple);
 	new.z = multiply_row(matrix.grid[2], tuple);

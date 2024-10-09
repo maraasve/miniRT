@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tuples.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 17:07:14 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/07 18:00:52 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/09 16:33:15 by marieke          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,25 @@ typedef struct s_matrix
 	float	grid[4][4];
 }	t_matrix;
 
+typedef struct s_ray
+{
+	t_tuple	origin;
+	t_tuple	direction;
+}	t_ray;
+
+typedef struct s_sphere
+{
+	t_tuple	center;
+	float	radius;
+}	t_sphere;
+
+typedef struct s_intersection
+{
+	int		count;
+	float	t[2];
+}	t_intersection;
+
+
 //colors.c
 t_color	*add_colors(t_color one, t_color two);
 t_color	*subtract_colors(t_color one, t_color two);
@@ -81,12 +100,19 @@ float	**invert_matrix(float **matrix, int size);
 
 //matrix.c
 t_matrix	create_identity_matrix(void);
+t_tuple		multiply_matrix_tuple(t_matrix matrix, t_tuple tuple);
 
 //point.c
 bool	is_point(t_tuple tuple);
 void	create_point(t_tuple *tuple, float x, float y, float z);
 
+//rotation.c
+t_tuple		rotate_x(t_tuple point, float radians);
+
 //translation.c
+t_tuple		translate_tuple(t_tuple tuple, t_tuple translation);
+t_matrix	translation_matrix(t_tuple translation);
+t_matrix	scale(t_tuple scale);
 
 //tuples.c
 bool	same_tuple(t_tuple one, t_tuple two);

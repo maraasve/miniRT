@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tuples.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
+/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 17:07:14 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/09 16:33:15 by marieke          ###   ########.fr       */
+/*   Updated: 2024/10/11 15:54:10 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,10 +68,17 @@ typedef struct s_sphere
 	float	radius;
 }	t_sphere;
 
+typedef	struct s_object
+{
+	int	object_type; //not sure about this will see later
+}	t_object;
+
+
 typedef struct s_intersection
 {
 	int		count;
-	float	t[2];
+	float	t;
+	void	*object;
 }	t_intersection;
 
 

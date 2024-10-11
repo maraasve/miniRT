@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rays.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
+/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 15:57:47 by marieke           #+#    #+#             */
-/*   Updated: 2024/10/09 18:18:35 by marieke          ###   ########.fr       */
+/*   Updated: 2024/10/11 16:13:17 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,9 @@ float	get_discriminant(t_ray ray, t_tuple sphere_to_ray)
 	return (discriminant);
 }
 
-t_intersection	intersect(t_ray ray, t_sphere sphere)
+t_intersection	*intersect(t_ray ray, t_sphere sphere, int *count)
 {
-	t_intersection	xs;
+	t_intersection	*xs;
 	t_tuple			sphere_to_ray;
 	float			discriminant;
 	float			a; //dont like im calculating this twice, but will do for now
@@ -58,13 +58,37 @@ t_intersection	intersect(t_ray ray, t_sphere sphere)
 	discriminant = get_discriminant(ray, sphere_to_ray);
 	if (discriminant < 0)
 	{
-		xs.count = 0;
-		return (xs);
+		(*count) = 0;
+		return (NULL);
 	}
+	(*count) = 2;
+	xs = malloc(sizeof(t_intersection) * 2); // maybe intersections should be a linked list?
+	if (!xs)
+		return (NULL);
 	a = get_dot_product(ray.direction, ray.direction);
 	b = 2 * get_dot_product(ray.direction, sphere_to_ray);
-	xs.count = 2;
-	xs.t[0] = (-b - sqrtf(discriminant)) / (2 * a);
-	xs.t[1] = (-b + sqrtf(discriminant)) / (2 * a);
+	xs[0].t = (-b - sqrtf(discriminant)) / (2 * a);
+	xs[0].object = (void *)&sphere;
+	xs[1].t = (-b + sqrtf(discriminant)) / (2 * a);
+	xs[1].object = (void *)&sphere;
 	return (xs);
+}
+
+t_intersection	*hit(t_intersection *intersections, int count)
+{
+	int				i;
+	t_intersection	*hit;
+
+	hit = NULL;
+	i = 0;
+	while (i < count)
+	{
+		if (intersections[i].t > 0)
+		{
+			if (!hit || intersections[i].t < hit->t)
+				hit = & intersections[i];
+		}
+		i++;
+	}
+	return (hit);
 }

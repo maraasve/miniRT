@@ -6,7 +6,7 @@
 /*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 17:07:14 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/11 17:25:49 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/11 17:52:14 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,13 @@
 # define EPSILON 0.0001
 # define MS 4
 
-typedef struct s_tuple
+typedef enum
+{
+	SPHERE,
+	CUBE
+} t_object_type;
+
+typedef struct	s_tuple
 {
 	float	x;
 	float	y;
@@ -32,49 +38,50 @@ typedef struct s_tuple
 	float	w;
 }	t_tuple;
 
-typedef	struct s_color
+typedef	struct	s_color
 {
 	float	red;
 	float	green;
 	float	blue;
 }	t_color;
 
-typedef struct s_projectile
+typedef struct	s_projectile
 {
 	t_tuple	position;
 	t_tuple	velocity;
 }	t_projectile;
 
-typedef struct s_env
+typedef struct	s_env
 {
 	t_tuple	gravity;
 	t_tuple	wind;
 }	t_env;
 
-typedef struct s_matrix
+typedef struct	s_matrix
 {
 	float	grid[4][4];
 }	t_matrix;
 
-typedef struct s_ray
+typedef struct	s_ray
 {
 	t_tuple	origin;
 	t_tuple	direction;
 }	t_ray;
 
-typedef struct s_sphere
+typedef	struct	s_object_base
 {
-	t_tuple	center;
-	float	radius;
+	int			object_type;
+	t_matrix	transformation;
+}	t_object_base;
+
+typedef struct	s_sphere
+{
+	t_tuple			center;
+	float			radius;
+	t_object_base	base;
 }	t_sphere;
 
-typedef	struct s_object
-{
-	int	object_type; //not sure about this will see later
-}	t_object;
-
-
-typedef struct s_intersection
+typedef struct	s_intersection
 {
 	int		count;
 	float	t;

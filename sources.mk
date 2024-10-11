@@ -6,6 +6,7 @@ src/invert_matrix.c \
 src/main.c \
 src/matrix.c \
 src/point.c \
+src/rays.c \
 src/rotation.c \
 src/translation.c \
 src/tuples.c \

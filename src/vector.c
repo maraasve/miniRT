@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
+/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 13:16:15 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/02 15:42:14 by marieke          ###   ########.fr       */
+/*   Updated: 2024/10/11 16:57:18 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,15 @@ bool	is_vector(t_tuple tuple)
 	return (false);
 }
 
-void	create_vector(t_tuple *tuple, float x, float y, float z)
+t_tuple	create_vector(float x, float y, float z)
 {
-	tuple->x = x;
-	tuple->y = y;
-	tuple->z = z;
-	tuple->w = 0.0;
+	t_tuple	new;
+
+	new.x = x;
+	new.y = y;
+	new.z = z;
+	new.w = 0.0;
+	return (new);
 }
 
 t_tuple	scale_vector(t_tuple vector, float scale)

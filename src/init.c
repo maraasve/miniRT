@@ -3,24 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
+/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 12:42:41 by marieke           #+#    #+#             */
-/*   Updated: 2024/10/02 15:44:36 by marieke          ###   ########.fr       */
+/*   Updated: 2024/10/11 16:58:24 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tuples.h"
-
-void	init_p_and_env(t_projectile *p, t_env *env)
-{
-	create_point(&p->position, 0, 1, 0);
-	create_vector(&p->velocity, 6, 6, 0);
-	p->velocity = normalize(p->velocity);
-	p->velocity = scale_vector(p->velocity, 11.25);
-	create_vector(&env->gravity, 0, -0.1, 0);
-	create_vector(&env->wind, -0.01, 0, 0);
-}
 
 int	init_mlx(t_data *data)
 {

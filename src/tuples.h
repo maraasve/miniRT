@@ -6,7 +6,7 @@
 /*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 17:07:14 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/11 15:54:10 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/11 17:25:49 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,6 @@ void	free_matrix(float **grid, int size);
 void	pixel_put(t_data *data, int x, int y, int color);
 
 //init.c
-void	init_p_and_env(t_projectile *p, t_env *env);
 int		init_mlx(t_data *data);
 
 //invert_matrix.c
@@ -111,7 +110,12 @@ t_tuple		multiply_matrix_tuple(t_matrix matrix, t_tuple tuple);
 
 //point.c
 bool	is_point(t_tuple tuple);
-void	create_point(t_tuple *tuple, float x, float y, float z);
+t_tuple	create_point(float x, float y, float z);
+
+//rays.c
+t_intersection	*intersect(t_ray ray, t_sphere sphere, int *count);
+t_intersection	*hit(t_intersection *intersections, int count);
+t_ray	transform_ray(t_ray ray, t_matrix transformation);
 
 //rotation.c
 t_tuple		rotate_x(t_tuple point, float radians);
@@ -119,7 +123,7 @@ t_tuple		rotate_x(t_tuple point, float radians);
 //translation.c
 t_tuple		translate_tuple(t_tuple tuple, t_tuple translation);
 t_matrix	translation_matrix(t_tuple translation);
-t_matrix	scale(t_tuple scale);
+t_matrix	scale_matrix(t_tuple scale);
 
 //tuples.c
 bool	same_tuple(t_tuple one, t_tuple two);
@@ -133,7 +137,7 @@ long long	millitimestamp(void);
 
 //vector.c
 bool	is_vector(t_tuple tuple);
-void	create_vector(t_tuple *tuple, float x, float y, float z);
+t_tuple	create_vector(float x, float y, float z);
 t_tuple	scale_vector(t_tuple vector, float scale);
 float	get_magnitude(t_tuple vector);
 t_tuple	normalize(t_tuple vector);

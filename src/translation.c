@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   translation.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
+/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:48:24 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/08 15:38:47 by marieke          ###   ########.fr       */
+/*   Updated: 2024/10/11 17:25:35 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,13 @@ t_matrix	translation_matrix(t_tuple translation)
 	t_matrix	new;
 
 	new = create_identity_matrix();
-	new.grid[3][0] = translation.x;
-	new.grid[3][1] = translation.y;
-	new.grid[3][2] = translation.z;
+	new.grid[0][3] = translation.x;
+	new.grid[1][3] = translation.y;
+	new.grid[2][3] = translation.z;
 	return (new);
 }
 
-t_matrix	scale(t_tuple scale)
+t_matrix	scale_matrix(t_tuple scale)
 {
 	t_matrix	new;
 

@@ -6,7 +6,7 @@
 /*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 17:28:02 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/07 13:28:05 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/14 17:25:54 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,6 @@
 # define MINIRT_H
 
 # include "tuples.h"
-
-# define WIDTH 900
-# define HEIGHT 550
 
 typedef struct s_data
 {

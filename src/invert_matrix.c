@@ -6,7 +6,7 @@
 /*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 12:50:44 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/07 17:36:00 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/14 17:30:03 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ float	cofactor(float **grid, int row, int col, int size)
 	float	minor_value;
 
 	minor_value = minor(grid, row, col, size);
-	if (row + col % 2)
+	if ((row + col) % 2)
 		return (-minor_value);
 	return (minor_value);
 }
@@ -112,18 +112,32 @@ float determinant(float **grid, int size)
 	return (det);
 }
 
-float	**invert_matrix(float **matrix, int size)
+void	print_matrix(float **matrix, int size)
 {
-	float	det;
-	float	**inverted;
-	int		i;
-	int		j;
+	for(int i = 0; i <size; i++)
+	{
+		for(int j = 0; j <size; j++)
+			printf("%f ", matrix[i][j]);
+		printf("\n");
+	}
+}
+
+t_matrix	*invert_matrix(float **matrix, int size)
+{
+	float		det;
+	t_matrix	*inverted;
+	float		**grid;
+	int			i;
+	int			j;
 	
 	det = determinant(matrix, size);
 	if (!det)
 		return (NULL);
-	inverted = allocate_mem_matrix(size);
+	inverted = malloc(sizeof(t_matrix));
 	if (!inverted)
+		return (NULL);
+	grid = allocate_mem_matrix(size);
+	if (!grid)
 		return (NULL);
 	i = 0;
 	while (i < size)
@@ -131,10 +145,11 @@ float	**invert_matrix(float **matrix, int size)
 		j = 0;
 		while (j < size)
 		{
-			inverted[i][j] = cofactor(matrix, j, i, size) / det;
+			grid[i][j] = cofactor(matrix, j, i, size) / det;
 			j++;
 		}
 		i++;
 	}
+	inverted->grid = grid;
 	return (inverted);
 }

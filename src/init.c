@@ -6,7 +6,7 @@
 /*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 12:42:41 by marieke           #+#    #+#             */
-/*   Updated: 2024/10/11 16:58:24 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/14 15:16:46 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	init_mlx(t_data *data)
 	data->mlx = mlx_init();
 	if (!data->mlx)
 		return (0);
-	data->window = mlx_new_window(data->mlx, WIDTH, HEIGHT, "projectile");
+	data->window = mlx_new_window(data->mlx, WIDTH, HEIGHT, "sphere");
 	if (!data->window)
 	{
 		free(data->mlx);

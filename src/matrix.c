@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   matrix.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
+/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 15:50:25 by marieke           #+#    #+#             */
-/*   Updated: 2024/10/08 14:48:43 by marieke          ###   ########.fr       */
+/*   Updated: 2024/10/14 17:30:32 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,9 @@ t_matrix	create_identity_matrix(void)
 	int row;
 	int col;
 	
+	identity.grid = allocate_mem_matrix(4);
+	if (!identity.grid)
+		return(identity); //not sure about this error handling
 	row = 0;
 	while (row < MS)
 	{
@@ -155,4 +158,24 @@ t_matrix	transpose_matrix(t_matrix matrix)
 		row++;
 	}
 	return (new);
+}
+
+bool is_identity_matrix(float **matrix, int size) 
+{
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            if (i == j) {
+                // Check diagonal elements
+                if (matrix[i][j] != 1.0f) {
+                    return false; // Not an identity matrix
+                }
+            } else {
+                // Check non-diagonal elements
+                if (matrix[i][j] != 0.0f) {
+                    return false; // Not an identity matrix
+                }
+            }
+        }
+    }
+    return true; // It is an identity matrix
 }

@@ -1,24 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   image.c                                            :+:      :+:    :+:   */
+/*   hooks.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/01 17:25:06 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/14 15:14:58 by maraasve         ###   ########.fr       */
+/*   Created: 2024/05/07 18:22:50 by spenning          #+#    #+#             */
+/*   Updated: 2024/10/14 15:53:04 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tuples.h"
 
-void	pixel_put(t_data *data, int x, int y, int color)
+int	keypress(int keycode, t_data *data)
 {
-	char	*dst;
-
-	if (x < WIDTH && x > 0 && y < HEIGHT && y > 0)
+	if (keycode == 65307)
 	{
-		dst = data->addr + (y * data->line_length + x * (data->bpp / 8));
-		*(unsigned int *)dst = color;
+		mlx_loop_end(data->mlx);
 	}
+	return (0);
+}
+
+int	destroy(t_data *data)
+{
+	mlx_loop_end(data->mlx);
+	return (0);
+}
+
+void	hooks(t_data *data)
+{
+	mlx_hook(data->window, 2, 1L << 0, keypress, data);
+	mlx_hook(data->window, 17, 0L, destroy, data);
 }

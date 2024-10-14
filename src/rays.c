@@ -6,7 +6,7 @@
 /*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 15:57:47 by marieke           #+#    #+#             */
-/*   Updated: 2024/10/11 18:02:07 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/14 17:31:22 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,15 @@ t_tuple	position(t_ray ray, float time)
 	return (new_pos);
 }
 
+t_ray	transform_ray(t_ray ray, t_matrix transformation)
+{
+	t_ray	transformed;
+
+	transformed.origin = multiply_matrix_tuple(transformation, ray.origin);
+	transformed.direction = multiply_matrix_tuple(transformation, ray.direction);
+	return (transformed);
+}
+
 float	get_discriminant(t_ray ray, t_tuple sphere_to_ray)
 {
 	float	a;
@@ -50,10 +59,18 @@ t_intersection	*intersect(t_ray ray, t_sphere sphere, int *count)
 {
 	t_intersection	*xs;
 	t_tuple			sphere_to_ray;
+	t_matrix		*inverted;
 	float			discriminant;
 	float			a; //dont like im calculating this twice, but will do for now
 	float			b;
 
+	if (!is_identity_matrix(sphere.base.transformation.grid, 4))
+	{
+		inverted = invert_matrix(sphere.base.transformation.grid, 4);
+		if (!inverted)
+			return (NULL);
+		ray = transform_ray(ray, *inverted);
+	}
 	sphere_to_ray = subtract_tuple(ray.origin, sphere.center);
 	discriminant = get_discriminant(ray, sphere_to_ray);
 	if (discriminant < 0)
@@ -74,7 +91,7 @@ t_intersection	*intersect(t_ray ray, t_sphere sphere, int *count)
 	return (xs);
 }
 
-t_intersection	*hit(t_intersection *intersections, int count)
+t_intersection	*get_hit(t_intersection *intersections, int count)
 {
 	int				i;
 	t_intersection	*hit;
@@ -93,11 +110,3 @@ t_intersection	*hit(t_intersection *intersections, int count)
 	return (hit);
 }
 
-t_ray	transform_ray(t_ray ray, t_matrix transformation)
-{
-	t_ray	transformed;
-
-	transformed.origin = multiply_matrix_tuple(transformation, ray.origin);
-	transformed.direction = multiply_matrix_tuple(transformation, ray.direction);
-	return (transformed);
-}

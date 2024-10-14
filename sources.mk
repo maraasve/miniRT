@@ -1,5 +1,6 @@
 SOURCES = src/colors.c \
 src/free.c \
+src/hooks.c \
 src/image.c \
 src/init.c \
 src/invert_matrix.c \

@@ -6,7 +6,7 @@
 /*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 17:07:14 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/11 17:52:14 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/14 17:30:51 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,10 @@
 
 # define EPSILON 0.0001
 # define MS 4
+# define HEIGHT 100
+# define WIDTH 100
+# define RED 0xFF0000
+# define BLACK 0x000000
 
 typedef enum
 {
@@ -59,7 +63,8 @@ typedef struct	s_env
 
 typedef struct	s_matrix
 {
-	float	grid[4][4];
+	float	**grid;
+	int		size;
 }	t_matrix;
 
 typedef struct	s_ray
@@ -99,6 +104,9 @@ t_color	*colors_multiply(t_color one, t_color two);
 void	free_mlx(t_data *data);
 void	free_matrix(float **grid, int size);
 
+//hooks.c
+void	hooks(t_data *data);
+
 //image.c
 void	pixel_put(t_data *data, int x, int y, int color);
 
@@ -106,14 +114,15 @@ void	pixel_put(t_data *data, int x, int y, int color);
 int		init_mlx(t_data *data);
 
 //invert_matrix.c
-float	**submatrix(float **grid, int row, int col, int size);
-float	**allocate_mem_matrix(int size);
-float	determinant(float **grid, int size);
-float	**invert_matrix(float **matrix, int size);
+float		**submatrix(float **grid, int row, int col, int size);
+float		**allocate_mem_matrix(int size);
+float		determinant(float **grid, int size);
+t_matrix	*invert_matrix(float **matrix, int size);
 
 //matrix.c
 t_matrix	create_identity_matrix(void);
 t_tuple		multiply_matrix_tuple(t_matrix matrix, t_tuple tuple);
+bool		is_identity_matrix(float **matrix, int size);
 
 //point.c
 bool	is_point(t_tuple tuple);
@@ -121,7 +130,7 @@ t_tuple	create_point(float x, float y, float z);
 
 //rays.c
 t_intersection	*intersect(t_ray ray, t_sphere sphere, int *count);
-t_intersection	*hit(t_intersection *intersections, int count);
+t_intersection	*get_hit(t_intersection *intersections, int count);
 t_ray	transform_ray(t_ray ray, t_matrix transformation);
 
 //rotation.c

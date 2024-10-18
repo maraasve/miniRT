@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   matrix.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/02 15:50:25 by marieke           #+#    #+#             */
-/*   Updated: 2024/10/14 17:30:32 by maraasve         ###   ########.fr       */
+/*   Created: 2024/10/18 14:48:35 by marieke           #+#    #+#             */
+/*   Updated: 2024/10/18 14:55:18 by marieke          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,9 @@ t_matrix	transpose_matrix(t_matrix matrix)
 	int			row;
 	int			col;
 
+	new.grid = create_matrix(MS, MS); //better to use matrix.size
+	if (!new.grid)
+		return (create_identity_matrix()); //need to return a pointer so i can return NULL
 	row = 0;
 	while (row < MS)
 	{
@@ -162,20 +165,18 @@ t_matrix	transpose_matrix(t_matrix matrix)
 
 bool is_identity_matrix(float **matrix, int size) 
 {
-    for (int i = 0; i < size; i++) {
-        for (int j = 0; j < size; j++) {
-            if (i == j) {
-                // Check diagonal elements
-                if (matrix[i][j] != 1.0f) {
-                    return false; // Not an identity matrix
-                }
-            } else {
-                // Check non-diagonal elements
-                if (matrix[i][j] != 0.0f) {
-                    return false; // Not an identity matrix
-                }
-            }
-        }
-    }
-    return true; // It is an identity matrix
+	for (int i = 0; i < size; i++) {
+		for (int j = 0; j < size; j++) {
+			if (i == j) {
+				if (matrix[i][j] != 1.0f) {
+					return false;
+				}
+			} else {
+				if (matrix[i][j] != 0.0f) {
+					return false;
+				}
+			}
+		}
+	}
+	return true;
 }

@@ -3,21 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 17:06:00 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/14 18:01:52 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/18 17:18:21 by marieke          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tuples.h"
 
-void	render(t_data *data, t_sphere sphere)
+void	render(t_data *data, t_sphere sphere, t_point_light light)
 {
 	t_ray			ray;
 	t_tuple			target;
+	t_tuple			point;
+	t_tuple			normal;
+	t_tuple			eye;
 	t_intersection	*intersection;
 	t_intersection	*hit;
+	t_color			color;
 	float			wall_z = 10;
 	float			wall_size = 7.0;
 	float			pixel_size = wall_size / HEIGHT;
@@ -45,17 +49,20 @@ void	render(t_data *data, t_sphere sphere)
 			if (intersection)
 			{
 				hit = get_hit(intersection, count);
-				if (hit)create_identity_matrix();
+				if (hit)
 				{
-					pixel_put(data, x, y, RED);
-					printf("PUT THE PIXEL\n");
+					point = position(ray, hit->t);
+					normal = normal_at(sphere, point);
+					eye = negate_vector(ray.direction);
+					color = lighting(sphere.material, light, point, eye, normal);
+					pixel_put(data, x, y, color);
 				}
 				else
-					pixel_put(data, x, y, BLACK);
+					pixel_put(data, x, y, new_color(0, 0, 0));
 				free(intersection);
 			}
 			else
-				pixel_put(data, x, y, BLACK);
+				pixel_put(data, x, y, new_color(0, 0, 0));
 			x++;
 		}
 		y++;
@@ -66,18 +73,26 @@ int main(void)
 {
 	t_data		data;
 	t_sphere	sphere;
+	t_material	material;
 	t_object_base base;
-	t_tuple scale = create_point(0.5, 1, 0.5);
-	
-	base.transformation = scale_matrix(scale);
+	t_point_light light;
+
+	base.transformation = create_identity_matrix();
+
+	material = default_material();
+	material.color = new_color(1, 0.2, 0.5);
+	sphere.material = material;
 
 	sphere.center = create_point(0, 0, 0);
 	sphere.radius = 1;
 	sphere.base = base;
+
+	light = new_light(create_point(-5, 5, -5), new_color(1, 1, 1));
+
 	if (!init_mlx(&data))
 		return (1);
 	hooks(&data);
-	render(&data, sphere);
+	render(&data, sphere, light);
 	mlx_put_image_to_window(data.mlx, data.window, data.image, 0, 0);
 	mlx_loop(data.mlx);
 	free_mlx(&data);

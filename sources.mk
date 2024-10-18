@@ -4,6 +4,7 @@ src/hooks.c \
 src/image.c \
 src/init.c \
 src/invert_matrix.c \
+src/light.c \
 src/main.c \
 src/matrix.c \
 src/point.c \

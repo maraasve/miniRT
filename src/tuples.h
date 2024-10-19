@@ -6,7 +6,7 @@
 /*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 17:07:14 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/18 17:06:12 by marieke          ###   ########.fr       */
+/*   Updated: 2024/10/19 14:40:29 by marieke          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,9 @@ typedef struct	s_ray
 
 typedef	struct	s_object_base
 {
-	int			object_type;
-	t_matrix	transformation;
+	int						type;
+	t_matrix				transformation;
+	struct s_object_base	*next;
 }	t_object_base;
 
 typedef struct s_material
@@ -93,14 +94,14 @@ typedef struct	s_sphere
 	t_tuple			center;
 	float			radius;
 	t_material		material;
-	t_object_base	base;
+	t_object_base	*base;
 }	t_sphere;
 
 typedef struct	s_intersection
 {
-	int		count;
-	float	t;
-	void	*object;
+	float					t;
+	void					*object;
+	struct s_intersection	*next;
 }	t_intersection;
 
 typedef	struct s_point_light
@@ -108,6 +109,12 @@ typedef	struct s_point_light
 	t_color	intensity;
 	t_tuple	pos;
 }	t_point_light;
+
+typedef struct s_world
+{
+	t_object_base	*base;
+	t_point_light	light;
+}	t_world;
 
 //colors.c
 t_color	new_color(float r, float g, float b);
@@ -131,6 +138,10 @@ void	pixel_put(t_data *data, int x, int y, t_color color);
 //init.c
 int		init_mlx(t_data *data);
 
+//intersection.c
+t_intersection	*intersect_sphere(t_ray ray, t_sphere sphere, int *count);
+t_intersection	*get_hit(t_intersection *intersections, int count);
+
 //invert_matrix.c
 float		**submatrix(float **grid, int row, int col, int size);
 float		**allocate_mem_matrix(int size);
@@ -146,6 +157,10 @@ t_point_light	new_light(t_tuple pos, t_color color);
 t_material	default_material(void);
 t_color		lighting(t_material m, t_point_light light, t_tuple pos, t_tuple eyev, t_tuple normalv);
 
+//list.c
+t_object_base	*new_object_base(int type, t_matrix transformation);
+void	add_object_to_list(t_object_base **head, t_object_base *new);
+
 //matrix.c
 t_matrix	create_identity_matrix(void);
 t_tuple		multiply_matrix_tuple(t_matrix matrix, t_tuple tuple);
@@ -158,17 +173,18 @@ t_tuple	create_point(float x, float y, float z);
 
 //rays.c
 t_tuple	position(t_ray ray, float time);
-t_intersection	*intersect(t_ray ray, t_sphere sphere, int *count);
-t_intersection	*get_hit(t_intersection *intersections, int count);
 t_ray	transform_ray(t_ray ray, t_matrix transformation);
 
 //rotation.c
 t_tuple		rotate_x(t_tuple point, float radians);
 
-//translation.c
-t_tuple		translate_tuple(t_tuple tuple, t_tuple translation);
-t_matrix	translation_matrix(t_tuple translation);
-t_matrix	scale_matrix(t_tuple scale);
+//sphere.c
+t_sphere	*new_sphere(t_tuple center, float radius, t_material material, t_object_base *base);
+
+//transformation.c
+t_tuple		translate_tuple(t_tuple tuple, float x, float y, float z);
+t_matrix	translation_matrix(float x, float y, float z);
+t_matrix	scale_matrix(float x, float y, float z);
 
 //tuples.c
 bool	same_tuple(t_tuple one, t_tuple two);

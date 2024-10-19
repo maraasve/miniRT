@@ -6,7 +6,7 @@
 /*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 13:19:39 by marieke           #+#    #+#             */
-/*   Updated: 2024/10/18 17:07:13 by marieke          ###   ########.fr       */
+/*   Updated: 2024/10/19 13:36:43 by marieke          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ t_tuple	normal_at(t_sphere sphere, t_tuple point)
 	t_tuple		object_point;
 
 	world_normal = create_vector(0, 0, 0); //need to fix error handling
-	inverted = invert_matrix(sphere.base.transformation.grid, 4);
+	inverted = invert_matrix(sphere.base->transformation.grid, 4);
 	if (!inverted)
 		return (world_normal); //need to fix the error handling
 	object_point = multiply_matrix_tuple(*inverted, point);

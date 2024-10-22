@@ -6,7 +6,7 @@
 /*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 17:07:14 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/22 17:16:08 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/22 17:46:12 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,7 @@ t_comps	prepare_comps(t_intersection *intersection, t_ray ray);
 void	free_mlx(t_data *data);
 void	free_matrix(float **grid, int size);
 void	free_intersection(t_intersection **intersection);
+void	free_spheres(t_sphere **head);
 
 //hooks.c
 void	hooks(t_data *data);

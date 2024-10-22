@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   image.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
+/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 17:25:06 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/18 16:54:03 by marieke          ###   ########.fr       */
+/*   Updated: 2024/10/22 15:18:22 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	pixel_put(t_data *data, int x, int y, t_color color)
 	char	*dst;
 	int		color_int;
 
-	color_int = create_trgb(255, color.red, color.green, color.blue);
+	color_int = create_trgb(255, color.r, color.g, color.b);
 	if (x < WIDTH && x > 0 && y < HEIGHT && y > 0)
 	{
 		dst = data->addr + (y * data->line_length + x * (data->bpp / 8));

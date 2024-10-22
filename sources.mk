@@ -1,8 +1,10 @@
 SOURCES = src/colors.c \
+src/computations.c \
 src/free.c \
 src/hooks.c \
 src/image.c \
 src/init.c \
+src/intersection.c \
 src/invert_matrix.c \
 src/light.c \
 src/list.c \

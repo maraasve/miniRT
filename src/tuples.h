@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tuples.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
+/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 17:07:14 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/19 14:40:29 by marieke          ###   ########.fr       */
+/*   Updated: 2024/10/22 17:16:08 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,10 @@
 
 # define EPSILON 0.0001
 # define MS 4
-# define HEIGHT 100
-# define WIDTH 100
-# define RED 0xFF0000
-# define BLACK 0x000000
+# define HEIGHT 600
+# define WIDTH 800
+# define SUCCESS 0
+# define ERROR 1
 
 typedef enum
 {
@@ -44,9 +44,9 @@ typedef struct	s_tuple
 
 typedef	struct	s_color
 {
-	float	red;
-	float	green;
-	float	blue;
+	float	r;
+	float	g;
+	float	b;
 }	t_color;
 
 typedef struct	s_projectile
@@ -95,6 +95,7 @@ typedef struct	s_sphere
 	float			radius;
 	t_material		material;
 	t_object_base	*base;
+	struct s_sphere	*next;
 }	t_sphere;
 
 typedef struct	s_intersection
@@ -114,7 +115,20 @@ typedef struct s_world
 {
 	t_object_base	*base;
 	t_point_light	light;
+	t_intersection	*intersections;
+	t_sphere		*spheres;
 }	t_world;
+
+typedef struct s_comps
+{
+	float	t;
+	void	*object;
+	t_tuple	point;
+	t_tuple	eyev;
+	t_tuple	normalv;
+	bool	inside;
+}	t_comps;
+
 
 //colors.c
 t_color	new_color(float r, float g, float b);
@@ -125,9 +139,13 @@ t_color	colors_multiply(t_color one, t_color two);
 int		create_trgb(float t, float r, float g, float b);
 t_color clamp_color(t_color color);
 
+//computations.c
+t_comps	prepare_comps(t_intersection *intersection, t_ray ray);
+
 //free.c
 void	free_mlx(t_data *data);
 void	free_matrix(float **grid, int size);
+void	free_intersection(t_intersection **intersection);
 
 //hooks.c
 void	hooks(t_data *data);
@@ -139,8 +157,10 @@ void	pixel_put(t_data *data, int x, int y, t_color color);
 int		init_mlx(t_data *data);
 
 //intersection.c
-t_intersection	*intersect_sphere(t_ray ray, t_sphere sphere, int *count);
-t_intersection	*get_hit(t_intersection *intersections, int count);
+int	intersect_sphere(t_world *world, t_ray ray, t_sphere *sphere);
+int	intersect_world(t_world *world, t_ray ray);
+t_intersection	*get_hit(t_intersection *intersections);
+t_color	color_at(t_world *world, t_ray ray);
 
 //invert_matrix.c
 float		**submatrix(float **grid, int row, int col, int size);
@@ -150,16 +170,17 @@ t_matrix	*invert_matrix(float **matrix, int size);
 
 //light.c
 t_tuple		light_vector(t_tuple intersection, t_tuple light_src);
-t_tuple		normal_at(t_sphere sphere, t_tuple point);
+t_tuple		normal_at(t_sphere *sphere, t_tuple point);
 t_tuple		negate_vector(t_tuple vector);
 t_tuple		reflect(t_tuple in, t_tuple normal);
-t_point_light	new_light(t_tuple pos, t_color color);
+t_point_light	new_light(t_tuple pos, t_color intensity);
 t_material	default_material(void);
 t_color		lighting(t_material m, t_point_light light, t_tuple pos, t_tuple eyev, t_tuple normalv);
 
 //list.c
 t_object_base	*new_object_base(int type, t_matrix transformation);
 void	add_object_to_list(t_object_base **head, t_object_base *new);
+void	add_sphere_to_list(t_sphere **head, t_sphere *new);
 
 //matrix.c
 t_matrix	create_identity_matrix(void);

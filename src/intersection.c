@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   intersection.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
+/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 14:39:19 by marieke           #+#    #+#             */
-/*   Updated: 2024/10/19 15:06:40 by marieke          ###   ########.fr       */
+/*   Updated: 2024/10/22 17:19:09 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,102 +34,110 @@ t_intersection	*new_intersection(float t, void *object)
 	new->t = t;
 	new->object = object;
 	new->next = NULL;
+	return (new);
 }
 
-void	sort_intersections(t_intersection **head)
-{
-	t_intersection	*one;
-	t_intersection	*two;
-	int				swapped;
-
-	swapped = 1;
-	one = *head;
-	while (swapped)
-	{
-		swapped = 0;
-		two = one->next;
-		if (one->t > two->t)
-		{
-			
-			swapped = 1;
-		}
-		one = one->next;
-	}
-}
-
-void	add_intersection(t_intersection **head, t_intersection *new)
+int	add_intersection_sorted(t_intersection **head, t_intersection *new)
 {
 	t_intersection	*cur;
+	t_intersection	*prev;
 
 	if (!head || !new)
-		return ;
-	if (!*head)
+		return (ERROR);
+	if (!*head || (*head)->t >= new->t)
 	{
-		head = new;
-		return;
+		new->next = *head;
+		*head = new;
+		return (SUCCESS);
 	}
-	cur = *head;
-	while (cur->next)
+	prev = NULL;
+	cur = (*head);
+	while (cur && cur->t < new->t)
+	{
+		prev = cur;
 		cur = cur->next;
-	cur->next = new;
+	}
+	prev->next = new;
+	new->next = cur;
+	return (SUCCESS);
 }
 
-t_intersection	*intersect_sphere(t_ray ray, t_sphere sphere, int *count)
+int	intersect_sphere(t_world *world, t_ray ray, t_sphere *sphere)
 {
-	t_intersection	*xs;
 	t_tuple			sphere_to_ray;
 	t_matrix		*inverted;
 	float			discriminant;
+	float			t;
 	float			a; //dont like im calculating this twice, but will do for now
 	float			b;
 
-	if (!is_identity_matrix(sphere.base->transformation.grid, 4))
+	if (!is_identity_matrix(sphere->base->transformation.grid, 4))
 	{
-		inverted = invert_matrix(sphere.base->transformation.grid, 4);
+		inverted = invert_matrix(sphere->base->transformation.grid, 4);
 		if (!inverted)
-			return (NULL);
+			return (ERROR);
 		ray = transform_ray(ray, *inverted);
 	}
-	sphere_to_ray = subtract_tuple(ray.origin, sphere.center);
+	sphere_to_ray = subtract_tuple(ray.origin, sphere->center);
 	discriminant = get_discriminant(ray, sphere_to_ray);
 	if (discriminant < 0)
-	{
-		(*count) = 0;
-		return (NULL);
-	}
-	(*count) = 2;
-	xs = malloc(sizeof(t_intersection) * 2); // maybe intersections should be a linked list?
-	if (!xs)
-		return (NULL);
+		return (SUCCESS);
 	a = get_dot_product(ray.direction, ray.direction);
 	b = 2 * get_dot_product(ray.direction, sphere_to_ray);
-	xs[0].t = (-b - sqrtf(discriminant)) / (2 * a);
-	xs[0].object = (void *)&sphere;
-	xs[1].t = (-b + sqrtf(discriminant)) / (2 * a);
-	xs[1].object = (void *)&sphere;
-	return (xs);
+	t = (-b - sqrtf(discriminant)) / (2 * a);
+	add_intersection_sorted(&world->intersections, new_intersection(t, (void *)sphere));
+	t = (-b + sqrtf(discriminant)) / (2 * a);
+	add_intersection_sorted(&world->intersections, new_intersection(t, (void *)sphere));
+	return (SUCCESS);
 }
 
-void	intersect_world(t_world world, t_ray ray)
+int	intersect_world(t_world *world, t_ray ray)
 {
+	t_sphere *cur;
 
-}
-
-t_intersection	*get_hit(t_intersection *intersections, int count)
-{
-	int				i;
-	t_intersection	*hit;
-
-	hit = NULL;
-	i = 0;
-	while (i < count)
+	cur = world->spheres;
+	while (cur)
 	{
-		if (intersections[i].t > 0)
-		{
-			if (!hit || intersections[i].t < hit->t)
-				hit = & intersections[i];
-		}
-		i++;
+			if (intersect_sphere(world, ray, cur) == ERROR)
+				return (ERROR);
+		cur = cur->next;
 	}
-	return (hit);
+	return (SUCCESS);
+}
+
+t_intersection	*get_hit(t_intersection *intersections)
+{
+	t_intersection	*cur;
+
+	cur = intersections;
+	while (cur)
+	{
+		if (cur->t > 0)
+			return (cur);
+		cur = cur->next;
+	}
+	return (NULL);
+}
+
+t_color	shade_hit(t_world world, t_comps comps)
+{
+	t_sphere *sphere;
+
+	sphere = (t_sphere *)comps.object;
+
+	return (lighting(sphere->material, world.light, comps.point, comps.eyev, comps.normalv));
+}
+
+t_color	color_at(t_world *world, t_ray ray)
+{
+	t_comps	comps;
+	t_intersection *hit;
+
+	intersect_world(world, ray);
+	hit = get_hit(world->intersections);
+	if (!hit)
+		return (clamp_color(new_color(0, 0, 0)));
+	
+	comps = prepare_comps(hit, ray);
+	return (shade_hit(*world, comps));
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   light.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
+/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 13:19:39 by marieke           #+#    #+#             */
-/*   Updated: 2024/10/19 13:36:43 by marieke          ###   ########.fr       */
+/*   Updated: 2024/10/22 16:41:28 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ t_tuple	light_vector(t_tuple intersection, t_tuple light_src)
 	return(light_vec);
 }
 
-t_tuple	normal_at(t_sphere sphere, t_tuple point)
+t_tuple	normal_at(t_sphere *sphere, t_tuple point)
 {
 	t_tuple		obj_normal;
 	t_tuple		world_normal;
@@ -39,11 +39,11 @@ t_tuple	normal_at(t_sphere sphere, t_tuple point)
 	t_tuple		object_point;
 
 	world_normal = create_vector(0, 0, 0); //need to fix error handling
-	inverted = invert_matrix(sphere.base->transformation.grid, 4);
+	inverted = invert_matrix(sphere->base->transformation.grid, 4);
 	if (!inverted)
 		return (world_normal); //need to fix the error handling
 	object_point = multiply_matrix_tuple(*inverted, point);
-	obj_normal = subtract_tuple(object_point, sphere.center);
+	obj_normal = subtract_tuple(object_point, sphere->center);
 	world_normal = multiply_matrix_tuple(transpose_matrix(*inverted), obj_normal);
 	free(inverted);
 	world_normal.w = 0;
@@ -63,12 +63,12 @@ t_tuple	reflect(t_tuple in, t_tuple normal)
 	return(reflection);
 }
 
-t_point_light	new_light(t_tuple pos, t_color color)
+t_point_light	new_light(t_tuple pos, t_color intensity)
 {
 	t_point_light	new;
 
 	new.pos = pos;
-	new.intensity = color;
+	new.intensity = intensity;
 	return (new);
 }
 
@@ -76,9 +76,9 @@ t_material	default_material(void)
 {
 	t_material	material;
 
-	material.color.red = 1;
-	material.color.green = 1;
-	material.color.blue = 1;
+	//material.color.r = 1;
+	//material.color.g = 1;
+	//material.color.b = 1;
 	material.ambient = 0.1;
 	material.diffuse = 0.9;
 	material.specular = 0.9;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
+/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 12:43:48 by marieke           #+#    #+#             */
-/*   Updated: 2024/10/19 14:34:24 by marieke          ###   ########.fr       */
+/*   Updated: 2024/10/22 15:17:48 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,17 +34,19 @@ void	free_matrix(float **grid, int size)
 	free(grid);
 }
 
-void	free_intersection(t_intersection *intersection)
+void	free_intersection(t_intersection **intersection)
 {
 	t_intersection *cur;
+	t_intersection *next;
 
-	if (!intersection)
+	if (!intersection || !*intersection)
 		return ;
-	cur = intersection;
+	cur = (*intersection);
 	while (cur)
 	{
-		intersection = intersection->next;
+		next = cur->next;
 		free(cur);
-		cur = intersection;
+		cur = next;
 	}
+	(*intersection) = NULL;
 }

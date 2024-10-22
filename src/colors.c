@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   colors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
+/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 14:47:44 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/18 17:06:01 by marieke          ###   ########.fr       */
+/*   Updated: 2024/10/22 15:07:54 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@ t_color	new_color(float r, float g, float b)
 {
 	t_color	new;
 
-	new.red = r;
-	new.green = g;
-	new.blue = b;
+	new.r = r;
+	new.g = g;
+	new.b = b;
 	return (new);
 }
 
@@ -26,9 +26,9 @@ t_color	add_colors(t_color one, t_color two)
 {
 	t_color new;
 
-	new.red = one.red + two.red;
-	new.green = one.green + two.green;
-	new.blue = one.blue + two.blue;
+	new.r = one.r + two.r;
+	new.g = one.g + two.g;
+	new.b = one.b + two.b;
 	return (new);
 }
 
@@ -36,9 +36,9 @@ t_color	subtract_colors(t_color one, t_color two)
 {
 	t_color new;
 
-	new.red = one.red - two.red;
-	new.green = one.green - two.green;
-	new.blue = one.blue - two.blue;
+	new.r = one.r - two.r;
+	new.g = one.g - two.g;
+	new.b= one.b- two.b;
 	return (new);
 }
 
@@ -46,9 +46,9 @@ t_color	colors_multi_scalar(t_color one, float scalar)
 {
 	t_color new;
 
-	new.red = one.red * scalar;
-	new.green = one.green * scalar;
-	new.blue = one.blue * scalar;
+	new.r = one.r * scalar;
+	new.g = one.g * scalar;
+	new.b = one.b * scalar;
 	return (new);
 }
 
@@ -56,9 +56,9 @@ t_color	colors_multiply(t_color one, t_color two)
 {
 	t_color new;
 
-	new.red = one.red * two.red;
-	new.green = one.green * two.green;
-	new.blue = one.blue * two.blue;
+	new.r = one.r * two.r;
+	new.g = one.g * two.g;
+	new.b = one.b * two.b;
 	return (new);
 }
 
@@ -81,8 +81,8 @@ int	create_trgb(float t, float r, float g, float b)
 
 t_color clamp_color(t_color color) 
 {
-    color.red = fminf(fmaxf(color.red, 0.0), 1.0);
-    color.green = fminf(fmaxf(color.green, 0.0), 1.0);
-    color.blue = fminf(fmaxf(color.blue, 0.0), 1.0);
+    color.r = fminf(fmaxf(color.r, 0.0), 1.0);
+    color.g = fminf(fmaxf(color.g, 0.0), 1.0);
+    color.b = fminf(fmaxf(color.b, 0.0), 1.0);
     return color;
 }

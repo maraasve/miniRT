@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 17:06:00 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/22 18:05:48 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/23 15:58:34 by marieke          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,32 +53,35 @@ int main(void)
 {
 	t_data			data;
 	t_world			world;
-	t_sphere		*sphere1;
-	t_sphere		*sphere2;
-	t_sphere		*sphere3;
+	t_object		*sphere;
+	t_object		*cylinder;
+	t_object		*plane;
 	t_ray			ray;
 
-	sphere1 = new_sphere(create_point(0, 0, 0), 1, default_material(), new_object_base(SPHERE, scale_matrix(0.5,0.5,0.5)));
-	if (!sphere1)
+	sphere = new_object(create_point(0, 0, 0), 1, default_material(), new_object_base(SPHERE, scale_matrix(0.5,0.5,0.5)));
+	if (!sphere)
 		return (1);
-	sphere2 = new_sphere(create_point(0, 0, 0), 1, default_material(), new_object_base(SPHERE, translation_matrix(1.5, 0, 2)));
-	if (!sphere2)
+	plane = new_object(create_point(0,0,0), 0, default_material(), new_object_base(PLANE, translation_matrix(0, -15, 0)));
+	if (!plane)
 		return (2);
-	sphere3 = new_sphere(create_point(0, 0, 0), 1, default_material(), new_object_base(SPHERE, translation_matrix(-1.5, 0, 3)));
-	if (!sphere2)
+	cylinder = new_object(create_point(0,0,0), 0, default_material(), new_object_base(CYLINDER, translation_matrix(-2, -1.75,10)));
+	if (!plane)
 		return (2);
 
-	sphere1->material.color = new_color(1.0, 0.5, 0.8);
-	sphere2->material.color = new_color(0.2, 0.6, 0.4);
-	sphere3->material.color = new_color(0.2, 0.2, 0.8);
+	sphere->material.color = new_color(1.0, 0.6, 0.8);
+	plane->material.color = new_color(0.2, 0.6, 0.6);
+	cylinder->material.color = new_color(0.3, 0.5, 0.8);
+	cylinder->cyl_max = 4;
+	cylinder->cyl_min = 0;
+	plane->material.ambient = 0.6;
+	plane->material.diffuse = 0.3;
+	plane->material.specular = 0.3;
+	world.shapes = NULL;
+	add_shape_to_list(&world.shapes, sphere);
+	add_shape_to_list(&world.shapes, plane);
+	add_shape_to_list(&world.shapes, cylinder);
 	
-	world.base = NULL;
-	world.spheres = NULL;
-	add_sphere_to_list(&world.spheres, sphere1);
-	add_sphere_to_list(&world.spheres, sphere2);
-	add_sphere_to_list(&world.spheres, sphere3);
-	
-	world.light = new_light(create_point(200, 10, -400), new_color(1, 1, 1));
+	world.light = new_light(create_point(0, 10, -35), new_color(1, 1, 1));
 
 	world.intersections = NULL;
 
@@ -93,5 +96,5 @@ int main(void)
 	mlx_loop(data.mlx);
 	free_mlx(&data);
 
-	free_spheres(&world.spheres);
+	free_shapes(&world.shapes);
 }

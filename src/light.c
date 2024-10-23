@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   light.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 13:19:39 by marieke           #+#    #+#             */
-/*   Updated: 2024/10/22 16:41:28 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/23 15:12:03 by marieke          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,26 +29,6 @@ t_tuple	light_vector(t_tuple intersection, t_tuple light_src)
 
 	light_vec = subtract_tuple(light_src, intersection);
 	return(light_vec);
-}
-
-t_tuple	normal_at(t_sphere *sphere, t_tuple point)
-{
-	t_tuple		obj_normal;
-	t_tuple		world_normal;
-	t_matrix	*inverted;
-	t_tuple		object_point;
-
-	world_normal = create_vector(0, 0, 0); //need to fix error handling
-	inverted = invert_matrix(sphere->base->transformation.grid, 4);
-	if (!inverted)
-		return (world_normal); //need to fix the error handling
-	object_point = multiply_matrix_tuple(*inverted, point);
-	obj_normal = subtract_tuple(object_point, sphere->center);
-	world_normal = multiply_matrix_tuple(transpose_matrix(*inverted), obj_normal);
-	free(inverted);
-	world_normal.w = 0;
-	world_normal = normalize(world_normal);
-	return (world_normal);
 }
 
 t_tuple	reflect(t_tuple in, t_tuple normal)
@@ -76,10 +56,10 @@ t_material	default_material(void)
 {
 	t_material	material;
 
-	//material.color.r = 1;
-	//material.color.g = 1;
-	//material.color.b = 1;
-	material.ambient = 0.1;
+	material.color.r = 1;
+	material.color.g = 1;
+	material.color.b = 1;
+	material.ambient = 0.3;
 	material.diffuse = 0.9;
 	material.specular = 0.9;
 	material.shininess = 200.0;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tuples.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 17:07:14 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/22 17:46:12 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/23 15:46:54 by marieke          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,15 @@
 # define WIDTH 800
 # define SUCCESS 0
 # define ERROR 1
+# define CONSTANT_FACTOR 1.0
+# define LINEAR_FACTOR 0.1
+# define QUADTRATIC_FACTOR 0.01
 
 typedef enum
 {
 	SPHERE,
-	CUBE
+	PLANE,
+	CYLINDER
 } t_object_type;
 
 typedef struct	s_tuple
@@ -77,6 +81,7 @@ typedef	struct	s_object_base
 {
 	int						type;
 	t_matrix				transformation;
+	t_matrix				*inverted;
 	struct s_object_base	*next;
 }	t_object_base;
 
@@ -89,19 +94,22 @@ typedef struct s_material
 	float	shininess;
 }	t_material;
 
-typedef struct	s_sphere
+typedef struct	s_object
 {
+	int				type;
 	t_tuple			center;
 	float			radius;
+	int				cyl_min;
+	int				cyl_max;
 	t_material		material;
 	t_object_base	*base;
-	struct s_sphere	*next;
-}	t_sphere;
+	struct s_object	*next;
+}	t_object;
 
 typedef struct	s_intersection
 {
 	float					t;
-	void					*object;
+	t_object				*object;
 	struct s_intersection	*next;
 }	t_intersection;
 
@@ -111,18 +119,18 @@ typedef	struct s_point_light
 	t_tuple	pos;
 }	t_point_light;
 
+
 typedef struct s_world
 {
-	t_object_base	*base;
 	t_point_light	light;
 	t_intersection	*intersections;
-	t_sphere		*spheres;
+	t_object		*shapes;
 }	t_world;
 
 typedef struct s_comps
 {
 	float	t;
-	void	*object;
+	t_object	*object;
 	t_tuple	point;
 	t_tuple	eyev;
 	t_tuple	normalv;
@@ -146,7 +154,10 @@ t_comps	prepare_comps(t_intersection *intersection, t_ray ray);
 void	free_mlx(t_data *data);
 void	free_matrix(float **grid, int size);
 void	free_intersection(t_intersection **intersection);
-void	free_spheres(t_sphere **head);
+void	free_shapes(t_object **head);
+
+//hit.c
+t_color			color_at(t_world *world, t_ray ray);
 
 //hooks.c
 void	hooks(t_data *data);
@@ -158,10 +169,8 @@ void	pixel_put(t_data *data, int x, int y, t_color color);
 int		init_mlx(t_data *data);
 
 //intersection.c
-int	intersect_sphere(t_world *world, t_ray ray, t_sphere *sphere);
+int	intersect_sphere(t_world *world, t_ray ray, t_object *sphere);
 int	intersect_world(t_world *world, t_ray ray);
-t_intersection	*get_hit(t_intersection *intersections);
-t_color	color_at(t_world *world, t_ray ray);
 
 //invert_matrix.c
 float		**submatrix(float **grid, int row, int col, int size);
@@ -171,7 +180,6 @@ t_matrix	*invert_matrix(float **matrix, int size);
 
 //light.c
 t_tuple		light_vector(t_tuple intersection, t_tuple light_src);
-t_tuple		normal_at(t_sphere *sphere, t_tuple point);
 t_tuple		negate_vector(t_tuple vector);
 t_tuple		reflect(t_tuple in, t_tuple normal);
 t_point_light	new_light(t_tuple pos, t_color intensity);
@@ -180,14 +188,17 @@ t_color		lighting(t_material m, t_point_light light, t_tuple pos, t_tuple eyev, 
 
 //list.c
 t_object_base	*new_object_base(int type, t_matrix transformation);
-void	add_object_to_list(t_object_base **head, t_object_base *new);
-void	add_sphere_to_list(t_sphere **head, t_sphere *new);
+void	add_shape_to_list(t_object **head, t_object *new);
 
 //matrix.c
 t_matrix	create_identity_matrix(void);
 t_tuple		multiply_matrix_tuple(t_matrix matrix, t_tuple tuple);
+t_matrix	multiply_matrices(t_matrix one, t_matrix two);
 t_matrix	transpose_matrix(t_matrix matrix);
 bool		is_identity_matrix(float **matrix, int size);
+
+//normal.c
+t_tuple		normal_at(t_object *shape, t_tuple point);
 
 //point.c
 bool	is_point(t_tuple tuple);
@@ -201,7 +212,7 @@ t_ray	transform_ray(t_ray ray, t_matrix transformation);
 t_tuple		rotate_x(t_tuple point, float radians);
 
 //sphere.c
-t_sphere	*new_sphere(t_tuple center, float radius, t_material material, t_object_base *base);
+t_object	*new_object(t_tuple center, float radius, t_material material, t_object_base *base);
 
 //transformation.c
 t_tuple		translate_tuple(t_tuple tuple, float x, float y, float z);

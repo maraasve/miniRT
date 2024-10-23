@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   list.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 12:09:43 by marieke           #+#    #+#             */
-/*   Updated: 2024/10/22 17:19:13 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/23 15:48:04 by marieke          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,37 +15,44 @@
 t_object_base	*new_object_base(int type, t_matrix transformation)
 {
 	t_object_base	*new;
+	t_matrix		identity;
 
-	new = malloc(sizeof(t_object_base));
-	if (!new)
+	new = malloc(sizeof(t_object));
+	if(!new)
 		return (NULL);
 	new->type = type;
 	new->transformation = transformation;
-	new->next = NULL;
+	if (!is_identity_matrix(transformation.grid, 4))
+		new->inverted = invert_matrix(transformation.grid, 4);
+	else
+	{
+		identity = create_identity_matrix();
+		new->inverted = &identity;
+	}
 	return (new);
 }
 
-void	add_object_to_list(t_object_base **head, t_object_base *new)
-{
-	t_object_base	*current;
+// void	add_object_to_list(t_object_base **head, t_object_base *new)
+// {
+// 	t_object_base	*current;
 
-	if (!head || !new)
-		return ;
-	if (!*head)
-	{
-		*head = new;
-		new->next = NULL;
-	}
-	current = *head;
-	while (current->next)
-		current = current->next;
-	current->next = new;
-	new->next = NULL;
-}
+// 	if (!head || !new)
+// 		return ;
+// 	if (!*head)
+// 	{
+// 		*head = new;
+// 		new->next = NULL;
+// 	}
+// 	current = *head;
+// 	while (current->next)
+// 		current = current->next;
+// 	current->next = new;
+// 	new->next = NULL;
+//}
 
-void	add_sphere_to_list(t_sphere **head, t_sphere *new)
+void	add_shape_to_list(t_object **head, t_object *new)
 {
-	t_sphere	*current;
+	t_object	*current;
 
 	if (!head || !new)
 		return ;

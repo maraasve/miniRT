@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 12:43:48 by marieke           #+#    #+#             */
-/*   Updated: 2024/10/22 17:55:59 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/23 14:25:06 by marieke          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,10 @@ void	free_intersection(t_intersection **intersection)
 	(*intersection) = NULL;
 }
 
-void	free_spheres(t_sphere **head)
+void	free_shapes(t_object **head)
 {
-	t_sphere	*cur;
-	t_sphere	*next;
+	t_object	*cur;
+	t_object	*next;
 
 	if (!head || !*head)
 		return ;
@@ -63,6 +63,7 @@ void	free_spheres(t_sphere **head)
 	{
 		next = cur->next;
 		free_matrix(cur->base->transformation.grid, 4);
+		free_matrix(cur->base->inverted->grid, 4);
 		free(cur->base);
 		free(cur);
 		cur = next;

@@ -3,30 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   intersection.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 14:39:19 by marieke           #+#    #+#             */
-/*   Updated: 2024/10/22 17:19:09 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/23 15:41:37 by marieke          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tuples.h"
 
-float	get_discriminant(t_ray ray, t_tuple sphere_to_ray)
+float	get_discriminant(float a, float b, float c)
 {
-	float	a;
-	float	b;
-	float	c;
 	float	discriminant;
 	
-	a = get_dot_product(ray.direction, ray.direction);
-	b = 2 * get_dot_product(ray.direction, sphere_to_ray);
-	c = get_dot_product(sphere_to_ray, sphere_to_ray) - 1;
 	discriminant = powf(b, 2) - 4 * a * c;
 	return (discriminant);
 }
 
-t_intersection	*new_intersection(float t, void *object)
+t_intersection	*new_intersection(float t, t_object *object)
 {
 	t_intersection *new = malloc(sizeof(t_intersection));
 	if (!new)
@@ -62,82 +56,114 @@ int	add_intersection_sorted(t_intersection **head, t_intersection *new)
 	return (SUCCESS);
 }
 
-int	intersect_sphere(t_world *world, t_ray ray, t_sphere *sphere)
+int	intersect_plane(t_world	*world, t_ray ray, t_object *plane)
+{
+	float	t;
+
+	if (ft_abs(ray.direction.y) < EPSILON)
+		return (SUCCESS);
+	t = -ray.origin.y / ray.direction.y;
+	if (add_intersection_sorted(&world->intersections, new_intersection(t, (void *)plane)) == ERROR)
+		return (ERROR);
+	return (SUCCESS);
+}
+
+int	intersect_cylinder(t_world *world, t_ray ray, t_object *cylinder)
+{
+	float	a;
+	float	b;
+	float	c;
+	float	discriminant;
+	float	t;
+	float	y;
+
+	a = powf(ray.direction.x, 2) + powf(ray.direction.z, 2);
+	b = 2 * ray.origin.x * ray.direction.x + 2 * ray.origin.z * ray.direction.z;
+	c = powf(ray.origin.x, 2) + powf(ray.origin.z, 2) - 1;
+	discriminant = get_discriminant(a, b, c);
+	if (discriminant < 0)
+		return (SUCCESS);
+	t = (-b - sqrtf(discriminant)) / (2 * a);
+	y = ray.origin.y + t * ray.direction.y;
+	if (y > cylinder->cyl_min && y < cylinder->cyl_max)
+	{
+		if (add_intersection_sorted(&world->intersections, new_intersection(t, cylinder)) == ERROR)
+			return (ERROR);
+	}
+	t = (-b + sqrtf(discriminant)) / (2 * a);
+	y = ray.origin.y + t * ray.direction.y;
+	if (y > cylinder->cyl_min && y < cylinder->cyl_max)
+	{
+		if (add_intersection_sorted(&world->intersections, new_intersection(t, cylinder)) == ERROR)
+			return (ERROR);
+	}
+	return (SUCCESS);
+}
+
+int	intersect_sphere(t_world *world, t_ray ray, t_object *sphere)
 {
 	t_tuple			sphere_to_ray;
-	t_matrix		*inverted;
 	float			discriminant;
 	float			t;
 	float			a; //dont like im calculating this twice, but will do for now
 	float			b;
+	float			c;
 
-	if (!is_identity_matrix(sphere->base->transformation.grid, 4))
-	{
-		inverted = invert_matrix(sphere->base->transformation.grid, 4);
-		if (!inverted)
-			return (ERROR);
-		ray = transform_ray(ray, *inverted);
-	}
 	sphere_to_ray = subtract_tuple(ray.origin, sphere->center);
-	discriminant = get_discriminant(ray, sphere_to_ray);
-	if (discriminant < 0)
-		return (SUCCESS);
 	a = get_dot_product(ray.direction, ray.direction);
 	b = 2 * get_dot_product(ray.direction, sphere_to_ray);
+	c = get_dot_product(sphere_to_ray, sphere_to_ray) - 1;
+	discriminant = get_discriminant(a, b, c);
+	if (discriminant < 0)
+		return (SUCCESS);
 	t = (-b - sqrtf(discriminant)) / (2 * a);
-	add_intersection_sorted(&world->intersections, new_intersection(t, (void *)sphere));
+	if (add_intersection_sorted(&world->intersections, new_intersection(t, sphere)) == ERROR)
+		return (ERROR);
 	t = (-b + sqrtf(discriminant)) / (2 * a);
-	add_intersection_sorted(&world->intersections, new_intersection(t, (void *)sphere));
+	if (add_intersection_sorted(&world->intersections, new_intersection(t, sphere)) == ERROR)
+		return (ERROR);
 	return (SUCCESS);
+}
+
+int	local_intersect(t_world *world, t_object *shape, t_ray ray)
+{
+	if (shape->base->type == SPHERE)
+	{
+		if (intersect_sphere(world, ray, shape) == ERROR)
+			return (ERROR);
+	}
+	else if (shape->base->type == PLANE)
+	{
+		if (intersect_plane(world, ray, shape) == ERROR)
+			return (ERROR);
+	}
+	else if (shape->base->type == CYLINDER)
+	{
+		if (intersect_cylinder(world, ray, shape) == ERROR)
+			return (ERROR);
+	}
+	return (SUCCESS);
+}
+
+int	intersect(t_world *world, t_object *shape, t_ray ray)
+{
+	if (!is_identity_matrix(shape->base->transformation.grid, 4))
+		ray = transform_ray(ray, *shape->base->inverted);
+	if (local_intersect(world, shape, ray) == ERROR)
+		return (ERROR);
+	return(SUCCESS);
 }
 
 int	intersect_world(t_world *world, t_ray ray)
 {
-	t_sphere *cur;
+	t_object *cur;
 
-	cur = world->spheres;
+	cur = world->shapes;
 	while (cur)
 	{
-			if (intersect_sphere(world, ray, cur) == ERROR)
-				return (ERROR);
+		if (intersect(world, cur, ray) == ERROR)
+			return (ERROR);
 		cur = cur->next;
 	}
 	return (SUCCESS);
-}
-
-t_intersection	*get_hit(t_intersection *intersections)
-{
-	t_intersection	*cur;
-
-	cur = intersections;
-	while (cur)
-	{
-		if (cur->t > 0)
-			return (cur);
-		cur = cur->next;
-	}
-	return (NULL);
-}
-
-t_color	shade_hit(t_world world, t_comps comps)
-{
-	t_sphere *sphere;
-
-	sphere = (t_sphere *)comps.object;
-
-	return (lighting(sphere->material, world.light, comps.point, comps.eyev, comps.normalv));
-}
-
-t_color	color_at(t_world *world, t_ray ray)
-{
-	t_comps	comps;
-	t_intersection *hit;
-
-	intersect_world(world, ray);
-	hit = get_hit(world->intersections);
-	if (!hit)
-		return (clamp_color(new_color(0, 0, 0)));
-	
-	comps = prepare_comps(hit, ray);
-	return (shade_hit(*world, comps));
 }

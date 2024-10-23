@@ -1,28 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   sphere.c                                           :+:      :+:    :+:   */
+/*   computation.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/19 13:06:16 by marieke           #+#    #+#             */
-/*   Updated: 2024/10/23 14:26:00 by marieke          ###   ########.fr       */
+/*   Created: 2024/10/21 16:53:11 by marieke           #+#    #+#             */
+/*   Updated: 2024/10/23 14:28:35 by marieke          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tuples.h"
 
-t_object	*new_object(t_tuple center, float radius, t_material material, t_object_base *base)
+t_comps	*prepare_computations(t_intersection *intersection, t_ray ray)
 {
-	t_object	*new;
+	t_comps *new;
 
-	new = malloc(sizeof(t_object));
+	new = malloc(sizeof(t_comps));
 	if (!new)
 		return (NULL);
-	new->center = center;
-	new->radius = radius;
-	new->material = material;
-	new->base = base;
-	new->next = NULL;
+	new->t = intersection->t;
+	new->object = intersection->object;
+	new->point = position(ray, intersection->t);
+	new->eyev = negate_vector(ray.direction);
+	new->normalv = normal_at(new->object, new->point);
+	if (get_dot_product(new->normalv, new->eyev) < 0)
+		new->inside = true;
+	else
+		new->inside = false;
 	return (new);
 }

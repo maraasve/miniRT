@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tuples.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
+/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 17:07:14 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/23 15:46:54 by marieke          ###   ########.fr       */
+/*   Updated: 2024/10/25 15:45:08 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,23 +53,19 @@ typedef	struct	s_color
 	float	b;
 }	t_color;
 
-typedef struct	s_projectile
-{
-	t_tuple	position;
-	t_tuple	velocity;
-}	t_projectile;
-
-typedef struct	s_env
-{
-	t_tuple	gravity;
-	t_tuple	wind;
-}	t_env;
-
 typedef struct	s_matrix
 {
 	float	**grid;
 	int		size;
 }	t_matrix;
+
+typedef struct s_transformation
+{
+	t_matrix	scale;
+	t_matrix	translation;
+	t_matrix	rotate;
+}	t_transformation;
+
 
 typedef struct	s_ray
 {
@@ -99,8 +95,9 @@ typedef struct	s_object
 	int				type;
 	t_tuple			center;
 	float			radius;
-	int				cyl_min;
-	int				cyl_max;
+	float			cyl_min;
+	float			cyl_max;
+	bool			cyl_capped;
 	t_material		material;
 	t_object_base	*base;
 	struct s_object	*next;
@@ -155,6 +152,7 @@ void	free_mlx(t_data *data);
 void	free_matrix(float **grid, int size);
 void	free_intersection(t_intersection **intersection);
 void	free_shapes(t_object **head);
+void	free_transformation_matrix(t_transformation *transform);
 
 //hit.c
 t_color			color_at(t_world *world, t_ray ray);
@@ -178,7 +176,9 @@ float		**allocate_mem_matrix(int size);
 float		determinant(float **grid, int size);
 t_matrix	*invert_matrix(float **matrix, int size);
 
-//light.c
+//light.ct_matrix		rotate_x(float radians);
+t_matrix		rotate_y(float radians);
+t_matrix		rotate_z(float radians);
 t_tuple		light_vector(t_tuple intersection, t_tuple light_src);
 t_tuple		negate_vector(t_tuple vector);
 t_tuple		reflect(t_tuple in, t_tuple normal);
@@ -209,7 +209,7 @@ t_tuple	position(t_ray ray, float time);
 t_ray	transform_ray(t_ray ray, t_matrix transformation);
 
 //rotation.c
-t_tuple		rotate_x(t_tuple point, float radians);
+t_matrix	rotate(float x, float y, float z);
 
 //sphere.c
 t_object	*new_object(t_tuple center, float radius, t_material material, t_object_base *base);
@@ -218,6 +218,7 @@ t_object	*new_object(t_tuple center, float radius, t_material material, t_object
 t_tuple		translate_tuple(t_tuple tuple, float x, float y, float z);
 t_matrix	translation_matrix(float x, float y, float z);
 t_matrix	scale_matrix(float x, float y, float z);
+t_matrix	transformation_matrix(t_transformation transform);
 
 //tuples.c
 bool	same_tuple(t_tuple one, t_tuple two);

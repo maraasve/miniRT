@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   list.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
+/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 12:09:43 by marieke           #+#    #+#             */
-/*   Updated: 2024/10/23 15:48:04 by marieke          ###   ########.fr       */
+/*   Updated: 2024/10/25 14:33:08 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 t_object_base	*new_object_base(int type, t_matrix transformation)
 {
 	t_object_base	*new;
-	t_matrix		identity;
 
 	new = malloc(sizeof(t_object));
 	if(!new)
@@ -25,10 +24,7 @@ t_object_base	*new_object_base(int type, t_matrix transformation)
 	if (!is_identity_matrix(transformation.grid, 4))
 		new->inverted = invert_matrix(transformation.grid, 4);
 	else
-	{
-		identity = create_identity_matrix();
-		new->inverted = &identity;
-	}
+		new->inverted = NULL;
 	return (new);
 }
 

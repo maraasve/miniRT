@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   light.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
+/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 13:19:39 by marieke           #+#    #+#             */
-/*   Updated: 2024/10/23 15:12:03 by marieke          ###   ########.fr       */
+/*   Updated: 2024/10/25 17:09:08 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ t_material	default_material(void)
 	return (material);
 }
 
-t_color	lighting(t_material m, t_point_light light, t_tuple pos, t_tuple eyev, t_tuple normalv)
+t_color	lighting(t_material m, t_point_light light, t_tuple pos, t_tuple eyev, t_tuple normalv, bool in_shadow)
 {
 	t_color	result;
 	t_color	ambient;
@@ -83,7 +83,7 @@ t_color	lighting(t_material m, t_point_light light, t_tuple pos, t_tuple eyev, t
 	lightv = normalize(subtract_tuple(light.pos, pos));
 	ambient = colors_multi_scalar(effective_color, m.ambient);
 	light_dot_normal = get_dot_product(lightv, normalv);
-	if (light_dot_normal < 0)
+	if (light_dot_normal < 0 || in_shadow)
 	{
 		diffuse = new_color(0, 0, 0);
 		specular = new_color(0, 0, 0);

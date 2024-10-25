@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tuples.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
+/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 17:05:55 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/02 12:02:34 by marieke          ###   ########.fr       */
+/*   Updated: 2024/10/25 14:05:57 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ bool	same_tuple(t_tuple one, t_tuple two)
 
 t_tuple	add_tuple(t_tuple one, t_tuple two)
 {
-	t_tuple new;
+	t_tuple	new;
+
 	new.x = one.x + two.x;
 	new.y = one.y + two.y;
 	new.z = one.z + two.z;
@@ -34,10 +35,22 @@ t_tuple	add_tuple(t_tuple one, t_tuple two)
 
 t_tuple	subtract_tuple(t_tuple one, t_tuple two)
 {
-	t_tuple new;
+	t_tuple	new;
+
 	new.x = one.x - two.x;
 	new.y = one.y - two.y;
 	new.z = one.z - two.z;
 	new.w = one.w - two.w;
+	return (new);
+}
+
+t_tuple	scale_tuple(t_tuple tuple, float factor)
+{
+	t_tuple	new;
+
+	new.x = tuple.x * factor;
+	new.y = tuple.y * factor;
+	new.z = tuple.z * factor;
+	new.w = tuple.w;
 	return (new);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
+/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 12:43:48 by marieke           #+#    #+#             */
-/*   Updated: 2024/10/23 14:25:06 by marieke          ###   ########.fr       */
+/*   Updated: 2024/10/25 15:45:01 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,21 @@ void	free_shapes(t_object **head)
 	{
 		next = cur->next;
 		free_matrix(cur->base->transformation.grid, 4);
-		free_matrix(cur->base->inverted->grid, 4);
+		if (cur->base->inverted)
+		{
+			free_matrix(cur->base->inverted->grid, 4);
+			free(cur->base->inverted);
+		}
 		free(cur->base);
 		free(cur);
 		cur = next;
 	}
 	(*head) = NULL;
+}
+
+void	free_transformation_matrix(t_transformation *transform)
+{
+	free_matrix(transform->rotate.grid, 4);
+	free_matrix(transform->scale.grid, 4);
+	free_matrix(transform->translation.grid, 4);
 }

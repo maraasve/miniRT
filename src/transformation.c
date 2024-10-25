@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   transformation.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
+/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:48:24 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/19 13:59:34 by marieke          ###   ########.fr       */
+/*   Updated: 2024/10/25 15:43:23 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,5 +44,14 @@ t_matrix	scale_matrix(float x, float y, float z)
 	new.grid[1][1] = y;
 	new.grid[2][2] = z;
 	return (new);
+}
+
+t_matrix	transformation_matrix(t_transformation transform)
+{
+	t_matrix	transformation;
+
+	transformation = multiply_matrices(transform.scale, transform.rotate);
+	transformation = multiply_matrices(transformation, transform.translation);
+	return (transformation);
 }
 

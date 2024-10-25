@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   matrix.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
+/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 14:48:35 by marieke           #+#    #+#             */
-/*   Updated: 2024/10/23 15:47:11 by marieke          ###   ########.fr       */
+/*   Updated: 2024/10/25 15:40:53 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,8 @@ t_matrix	multiply_matrices(t_matrix one, t_matrix two)
 	int k;
 
 	row = 0;
+	new = create_identity_matrix();
+	//ERROR HANDLING
 	while (row < MS)
 	{
 		col = 0;
@@ -148,7 +150,7 @@ t_matrix	transpose_matrix(t_matrix matrix)
 
 	new.grid = create_matrix(MS, MS); //better to use matrix.size
 	if (!new.grid)
-		return (create_identity_matrix()); //need to return a pointer so i can return NULL
+		return (create_identity_matrix()); //need better error handling
 	row = 0;
 	while (row < MS)
 	{

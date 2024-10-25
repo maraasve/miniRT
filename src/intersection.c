@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   intersection.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
+/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 14:39:19 by marieke           #+#    #+#             */
-/*   Updated: 2024/10/23 15:41:37 by marieke          ###   ########.fr       */
+/*   Updated: 2024/10/25 16:50:48 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,36 +68,66 @@ int	intersect_plane(t_world	*world, t_ray ray, t_object *plane)
 	return (SUCCESS);
 }
 
-int	intersect_cylinder(t_world *world, t_ray ray, t_object *cylinder)
-{
-	float	a;
-	float	b;
-	float	c;
-	float	discriminant;
-	float	t;
-	float	y;
+bool check_cap(t_ray ray, float t) {
+    float x = ray.origin.x + t * ray.direction.x;
+    float z = ray.origin.z + t * ray.direction.z;
+    return (powf(x, 2) + powf(z, 2)) <= 1;
+}
 
-	a = powf(ray.direction.x, 2) + powf(ray.direction.z, 2);
-	b = 2 * ray.origin.x * ray.direction.x + 2 * ray.origin.z * ray.direction.z;
-	c = powf(ray.origin.x, 2) + powf(ray.origin.z, 2) - 1;
-	discriminant = get_discriminant(a, b, c);
-	if (discriminant < 0)
-		return (SUCCESS);
-	t = (-b - sqrtf(discriminant)) / (2 * a);
-	y = ray.origin.y + t * ray.direction.y;
-	if (y > cylinder->cyl_min && y < cylinder->cyl_max)
-	{
-		if (add_intersection_sorted(&world->intersections, new_intersection(t, cylinder)) == ERROR)
-			return (ERROR);
-	}
-	t = (-b + sqrtf(discriminant)) / (2 * a);
-	y = ray.origin.y + t * ray.direction.y;
-	if (y > cylinder->cyl_min && y < cylinder->cyl_max)
-	{
-		if (add_intersection_sorted(&world->intersections, new_intersection(t, cylinder)) == ERROR)
-			return (ERROR);
-	}
-	return (SUCCESS);
+bool intersect_caps(t_world *world, t_object *cylinder, t_ray ray) {
+    float t;
+
+    // Return early if cylinder is uncapped or ray direction y is zero (parallel to caps)
+    if (!cylinder->cyl_capped || equal_float(ray.direction.y, 0))
+        return (SUCCESS);
+
+    // Check intersection with lower cap at y = cyl_min
+    t = (cylinder->cyl_min - ray.origin.y) / ray.direction.y;
+    if (check_cap(ray, t)) {
+        if (add_intersection_sorted(&world->intersections, new_intersection(t, cylinder)) == ERROR)
+            return (ERROR);
+    }
+
+    // Check intersection with upper cap at y = cyl_max
+    t = (cylinder->cyl_max - ray.origin.y) / ray.direction.y;
+    if (check_cap(ray, t)) {
+        if (add_intersection_sorted(&world->intersections, new_intersection(t, cylinder)) == ERROR)
+            return (ERROR);
+    }
+
+    return (SUCCESS);
+}
+
+int intersect_cylinder(t_world *world, t_ray ray, t_object *cylinder) {
+    float a, b, c, discriminant, t, y;
+
+    // Body intersection calculations
+    a = powf(ray.direction.x, 2) + powf(ray.direction.z, 2);
+    b = 2 * ray.origin.x * ray.direction.x + 2 * ray.origin.z * ray.direction.z;
+    c = powf(ray.origin.x, 2) + powf(ray.origin.z, 2) - 1;
+    discriminant = get_discriminant(a, b, c);
+
+    if (discriminant >= 0) {
+        t = (-b - sqrtf(discriminant)) / (2 * a);
+        y = ray.origin.y + t * ray.direction.y;
+        if (y > cylinder->cyl_min && y < cylinder->cyl_max) {
+            if (add_intersection_sorted(&world->intersections, new_intersection(t, cylinder)) == ERROR)
+                return (ERROR);
+        }
+
+        t = (-b + sqrtf(discriminant)) / (2 * a);
+        y = ray.origin.y + t * ray.direction.y;
+        if (y > cylinder->cyl_min && y < cylinder->cyl_max) {
+            if (add_intersection_sorted(&world->intersections, new_intersection(t, cylinder)) == ERROR)
+                return (ERROR);
+        }
+    }
+
+    // Check for intersections with caps
+    if (intersect_caps(world, cylinder, ray) == ERROR)
+        return (ERROR);
+
+    return (SUCCESS);
 }
 
 int	intersect_sphere(t_world *world, t_ray ray, t_object *sphere)
@@ -147,7 +177,7 @@ int	local_intersect(t_world *world, t_object *shape, t_ray ray)
 
 int	intersect(t_world *world, t_object *shape, t_ray ray)
 {
-	if (!is_identity_matrix(shape->base->transformation.grid, 4))
+	if (shape->base->inverted)
 		ray = transform_ray(ray, *shape->base->inverted);
 	if (local_intersect(world, shape, ray) == ERROR)
 		return (ERROR);

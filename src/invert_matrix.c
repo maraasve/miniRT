@@ -6,7 +6,7 @@
 /*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 12:50:44 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/14 17:30:03 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/25 14:34:39 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,7 @@ t_matrix	*invert_matrix(float **matrix, int size)
 	
 	det = determinant(matrix, size);
 	if (!det)
-		return (NULL);
+		return (NULL); // error handling here is shittttt
 	inverted = malloc(sizeof(t_matrix));
 	if (!inverted)
 		return (NULL);

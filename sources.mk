@@ -15,6 +15,7 @@ src/normal.c \
 src/point.c \
 src/rays.c \
 src/rotation.c \
+src/shadow.c \
 src/sphere.c \
 src/transformation.c \
 src/tuples.c \

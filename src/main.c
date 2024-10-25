@@ -6,7 +6,7 @@
 /*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 17:06:00 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/25 16:57:23 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/25 17:41:33 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,10 @@ void	render(t_data *data, t_world *world)
 			target = create_point(world_x, world_y, wall_z);
 			ray.direction = normalize(subtract_tuple(target, ray.origin));
 			color = color_at(world, ray);
-			pixel_put(data, x, y, color);
 			free_intersection(&world->intersections);
+			free_intersection(&world->shadow_intersections);
+			pixel_put(data, x, y, color);
+			//free_intersection(&world->intersections);
 			x++;
 		}
 		y++;
@@ -111,6 +113,7 @@ int main(void)
 	world.light = new_light(create_point(10, 10, -35), new_color(1, 1, 1));
 
 	world.intersections = NULL;
+	world.shadow_intersections = NULL;
 
 	ray.direction = create_vector(0,0,1);
 	ray.origin = create_point(0, 0, -5);

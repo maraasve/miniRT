@@ -6,13 +6,13 @@
 /*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/23 12:37:18 by marieke           #+#    #+#             */
-/*   Updated: 2024/10/25 14:13:37 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/25 17:44:24 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tuples.h"
 
-static t_intersection	*get_hit(t_intersection *intersections)
+t_intersection	*get_hit(t_intersection *intersections)
 {
 	t_intersection	*cur;
 
@@ -26,12 +26,14 @@ static t_intersection	*get_hit(t_intersection *intersections)
 	return (NULL);
 }
 
-static t_color	shade_hit(t_world world, t_comps comps)
+static t_color	shade_hit(t_world *world, t_comps comps)
 {
 	t_object *shape;
+	bool	shadow = false;
 
 	shape = comps.object;
-	return (lighting(shape->material, world.light, comps.point, comps.eyev, comps.normalv));
+	//shadow = is_shadowed(world, comps.point);
+	return (lighting(shape->material, world->light, comps.point, comps.eyev, comps.normalv, shadow));
 }
 
 t_color	color_at(t_world *world, t_ray ray)
@@ -44,5 +46,5 @@ t_color	color_at(t_world *world, t_ray ray)
 	if (!hit)
 		return (clamp_color(new_color(0, 0, 0)));
 	comps = prepare_comps(hit, ray);
-	return (shade_hit(*world, comps));
+	return (shade_hit(world, comps));
 }

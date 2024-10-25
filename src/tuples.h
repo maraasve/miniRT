@@ -6,7 +6,7 @@
 /*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 17:07:14 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/25 15:45:08 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/25 17:43:17 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,7 @@ typedef struct s_world
 {
 	t_point_light	light;
 	t_intersection	*intersections;
+	t_intersection	*shadow_intersections;
 	t_object		*shapes;
 }	t_world;
 
@@ -156,6 +157,7 @@ void	free_transformation_matrix(t_transformation *transform);
 
 //hit.c
 t_color			color_at(t_world *world, t_ray ray);
+t_intersection	*get_hit(t_intersection *intersections);
 
 //hooks.c
 void	hooks(t_data *data);
@@ -167,7 +169,6 @@ void	pixel_put(t_data *data, int x, int y, t_color color);
 int		init_mlx(t_data *data);
 
 //intersection.c
-int	intersect_sphere(t_world *world, t_ray ray, t_object *sphere);
 int	intersect_world(t_world *world, t_ray ray);
 
 //invert_matrix.c
@@ -184,7 +185,7 @@ t_tuple		negate_vector(t_tuple vector);
 t_tuple		reflect(t_tuple in, t_tuple normal);
 t_point_light	new_light(t_tuple pos, t_color intensity);
 t_material	default_material(void);
-t_color		lighting(t_material m, t_point_light light, t_tuple pos, t_tuple eyev, t_tuple normalv);
+t_color		lighting(t_material m, t_point_light light, t_tuple pos, t_tuple eyev, t_tuple normalv, bool is_shadowed);
 
 //list.c
 t_object_base	*new_object_base(int type, t_matrix transformation);
@@ -210,6 +211,9 @@ t_ray	transform_ray(t_ray ray, t_matrix transformation);
 
 //rotation.c
 t_matrix	rotate(float x, float y, float z);
+
+//shadows.c
+bool	is_shadowed(t_world *world, t_tuple point);
 
 //sphere.c
 t_object	*new_object(t_tuple center, float radius, t_material material, t_object_base *base);

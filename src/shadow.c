@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shadow.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 17:09:43 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/25 17:43:12 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/28 13:20:13 by marieke          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ bool	is_shadowed(t_world *world, t_tuple point)
 	distance = get_magnitude(vector);
 	shadow_ray.origin = point;
 	shadow_ray.direction = normalize(vector);
-	intersect_world(world, shadow_ray);
+	world->shadow_intersections = intersect_world(world, shadow_ray);
 	hit = get_hit(world->shadow_intersections);
 	//free_intersection(&world->intersections);
 	if (!hit)

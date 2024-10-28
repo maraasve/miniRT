@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tuples.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 17:07:14 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/25 17:43:17 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/28 13:42:21 by marieke          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,7 +169,7 @@ void	pixel_put(t_data *data, int x, int y, t_color color);
 int		init_mlx(t_data *data);
 
 //intersection.c
-int	intersect_world(t_world *world, t_ray ray);
+t_intersection *intersect_world(t_world *world, t_ray ray);
 
 //invert_matrix.c
 float		**submatrix(float **grid, int row, int col, int size);
@@ -228,6 +228,7 @@ t_matrix	transformation_matrix(t_transformation transform);
 bool	same_tuple(t_tuple one, t_tuple two);
 t_tuple	add_tuple(t_tuple one, t_tuple two);
 t_tuple	subtract_tuple(t_tuple one, t_tuple two);
+t_tuple	scale_tuple(t_tuple tuple, float factor);
 
 //utils.c
 float	ft_abs(float a);

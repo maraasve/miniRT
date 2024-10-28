@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   hit.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/23 12:37:18 by marieke           #+#    #+#             */
-/*   Updated: 2024/10/25 17:44:24 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/28 13:42:42 by marieke          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,14 @@ t_intersection	*get_hit(t_intersection *intersections)
 
 static t_color	shade_hit(t_world *world, t_comps comps)
 {
-	t_object *shape;
-	bool	shadow = false;
+	t_object	*shape;
+	t_tuple		over_point;
+	bool		shadow = false;
 
 	shape = comps.object;
-	//shadow = is_shadowed(world, comps.point);
-	return (lighting(shape->material, world->light, comps.point, comps.eyev, comps.normalv, shadow));
+	over_point = add_tuple(comps.point, scale_tuple(comps.normalv, EPSILON));
+	shadow = is_shadowed(world, over_point);
+	return (lighting(shape->material, world->light, over_point, comps.eyev, comps.normalv, shadow));
 }
 
 t_color	color_at(t_world *world, t_ray ray)
@@ -41,7 +43,7 @@ t_color	color_at(t_world *world, t_ray ray)
 	t_comps	comps;
 	t_intersection *hit;
 
-	intersect_world(world, ray);
+	world->intersections = intersect_world(world, ray);
 	hit = get_hit(world->intersections);
 	if (!hit)
 		return (clamp_color(new_color(0, 0, 0)));

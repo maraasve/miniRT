@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 17:06:00 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/25 17:41:33 by maraasve         ###   ########.fr       */
+/*   Updated: 2024/10/28 13:54:51 by marieke          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ void	render(t_data *data, t_world *world)
 			free_intersection(&world->intersections);
 			free_intersection(&world->shadow_intersections);
 			pixel_put(data, x, y, color);
-			//free_intersection(&world->intersections);
 			x++;
 		}
 		y++;
@@ -62,8 +61,8 @@ int main(void)
 	t_object			*plane2;
 	t_ray				ray;
 
-	transformation.scale = scale_matrix(0.7, 0.7, 0.7);
-	transformation.translation = translation_matrix(-1, 0.5, -1);
+	transformation.scale = scale_matrix(0.9, 0.9, 0.9);
+	transformation.translation = translation_matrix(-1, -0.6, 5);
 	transformation.rotate = create_identity_matrix();
 	sphere = new_object(create_point(0, 0, 0), 1, default_material(), new_object_base(SPHERE, transformation_matrix(transformation)));
 	if (!sphere)
@@ -86,9 +85,9 @@ int main(void)
 		return (2);
 
 	free_transformation_matrix(&transformation);
-	transformation.scale = scale_matrix(0.5, 0.5, 0.5);
-	transformation.translation = translation_matrix(0.5, -0.5, 0);
-	transformation.rotate = rotate(0.5, 0, 0);
+	transformation.scale = scale_matrix(1, 1, 1);
+	transformation.translation = translation_matrix(1, -2, 8);
+	transformation.rotate = rotate(0, 0, 0);
 	cylinder = new_object(create_point(0,0,0), 0, default_material(), new_object_base(CYLINDER, transformation_matrix(transformation)));
 	if (!plane)
 		return (2);
@@ -110,7 +109,7 @@ int main(void)
 	add_shape_to_list(&world.shapes, plane2);
 	add_shape_to_list(&world.shapes, cylinder);
 	
-	world.light = new_light(create_point(10, 10, -35), new_color(1, 1, 1));
+	world.light = new_light(create_point(-10, 20, -50), new_color(1, 1, 1));
 
 	world.intersections = NULL;
 	world.shadow_intersections = NULL;

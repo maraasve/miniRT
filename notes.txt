@@ -1,3 +1,0 @@
-- combining transformation -> multiply matrix in reverse order (page 53/54)
-- maybe adjust rotation functions so it returns a matrix instead of a new point?
-- not sure if we'll need shearing transformation, so won't implement that yet

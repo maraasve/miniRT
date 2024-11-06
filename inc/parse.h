@@ -1,28 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   utils.c                                            :+:    :+:            */
+/*   parsing.h                                          :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: maraasve <maraasve@student.42.fr>            +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2024/10/01 13:16:49 by maraasve      #+#    #+#                 */
-/*   Updated: 2024/11/04 15:24:03 by spenning      ########   odam.nl         */
+/*   Created: 2024/10/01 17:28:02 by maraasve      #+#    #+#                 */
+/*   Updated: 2024/10/29 15:09:20 by spenning      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minirt.h>
-#include <calculations.h>
+#ifndef PARSE_H
+# define PARSE_H
 
-float	ft_abs(float a)
-{
-	if (a < 0)
-		return (-a);
-	return (a);
-}
+void parse(void);
 
-bool	equal_float(float a, float b)
-{
-	if (ft_abs(a - b) > EPSILON)
-		return (false);
-	return (true);
-}
+#endif
+

@@ -81,12 +81,13 @@ $(LIB)/$(MLX)/$(MLX.A):
 
 #Link
 $(TARGETDIR)/$(TARGET) : $(OBJECTS)
-	$(CC) $(OBJECTS) $(MLX_L_FLAGS) $(LIB)/$(LIBFT)/$(LIBFT.A) -o $(TARGETDIR)/$(TARGET) 
+	$(CC) $(OBJECTS) $(MLX_L_FLAGS) $(LIB)/$(LIBFT)/$(LIBFT.A) -o $(TARGETDIR)/$(TARGET)  -g
 
 #Compile
 $(OBJDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(MLX_C_FLAGS) -c -o $@ $^
+	@echo "Creating directory $(@D)"
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) $(MLX_C_FLAGS) -c -o $@ $^ -g
 
 
 #Non-File Targets

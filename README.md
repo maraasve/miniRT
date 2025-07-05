@@ -8,7 +8,7 @@
 
 - ✅ **Scene parsing** from `.rt` files  
 - 📷 **Camera** with configurable field of view and transformations  
-- ☀️ **Ambient, point, and directional lighting**
+- ☀️ **Ambient and point lighting**
 - 🔺 **Basic geometric primitives:**
   - Spheres
   - Planes
@@ -38,7 +38,13 @@ make
 ### ▶️ Run the program
 
 ```bash
-./minirt_bonus ./maps/mulit_lights.rt
+./minirt_bonus ./maps/multi_lights.rt
 ```
 
 ![img](./img/multi_lights.png)
+
+```bash
+./minirt_bonus ./maps/big_room.rt
+```
+
+![img](./img/big_room.png)

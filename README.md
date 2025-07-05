@@ -16,7 +16,6 @@
 - 🌈 **RGB color support**
 - 🧮 **Vector and matrix operations**
 - 🧪 **Ray-object intersection calculations**
-- 🖨️ **BMP image export** (optional, depending on implementation)
 
 ---
 

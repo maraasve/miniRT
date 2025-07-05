@@ -31,13 +31,17 @@ make
 To compile the ray tracer with bonus:
 
 ```bash
-make
+make bonus
 ```
 
 ### ▶️ Run the program
 
 ```bash
-./minirt_bonus ./maps/multi_lights.rt
+./minirt ./maps/H2O.rt
+```
+
+```bash
+./minirt_bonus ./maps/bonus/multi_lights.rt
 ```
 
 ![img](./img/multi_lights.png)

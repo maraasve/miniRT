@@ -6,7 +6,7 @@
 /*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:32:54 by spenning          #+#    #+#             */
-/*   Updated: 2025/07/05 12:18:10 by marieke          ###   ########.fr       */
+/*   Updated: 2025/07/05 16:13:31 by marieke          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	parse_add_plane(t_world *world, char *str)
 	parse.coor = parse_get_coordinates(str, &parse.i);
 	parse.normal = parse_get_normal(str, &parse.i);
 	if (!equal_float(ft_fabs(get_magnitude(parse.normal)), 1))
-		set_error(world, 1, NORMAL, NULL);
+		parse.normal = normalize(parse.normal);
 	parse.m = default_material();
 	parse.m.color = parse_get_color(str, &parse.i);
 	if (!world->exit_code)
@@ -71,7 +71,7 @@ void	parse_add_cyl(t_world *world, char *str)
 	parse.coor = parse_get_coordinates(str, &parse.i);
 	parse.normal = parse_get_normal(str, &parse.i);
 	if (!equal_float(ft_fabs(get_magnitude(parse.normal)), 1))
-		set_error(world, 1, NORMAL, NULL);
+		parse.normal = normalize(parse.normal);
 	parse.diameter = parse_get_float(str, &parse.i);
 	if (parse.diameter <= 0)
 		set_error(world, 1, DIAMETER, NULL);

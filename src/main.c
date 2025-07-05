@@ -3,127 +3,102 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
+/*   By: maraasve <maraasve@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 17:06:00 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/28 13:54:51 by marieke          ###   ########.fr       */
+/*   Updated: 2024/12/16 16:01:53 by maraasve         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tuples.h"
+#include <minirt.h>
+#include <shapes.h>
+#include <transformation.h>
+#include <intersection.h>
+#include <mini_mlx.h>
+#include <libft.h>
+#include <lighting.h>
+#include <free.h>
+#include <shapes.h>
+#include <list.h>
+#include <mlx.h>
+#include <camera.h>
+#include <parse.h>
 
-void	render(t_data *data, t_world *world)
+void	parsing_exit_message2(t_world *world)
 {
-	t_ray			ray;
-	t_tuple			target;
-	t_color			color;
-	float			wall_z = 10;
-	float			wall_size = 7.0;
-	float			aspect_ratio = (float)WIDTH / (float)HEIGHT;;
-	float			pixel_size = wall_size / HEIGHT;
-	float			half_height = wall_size / 2;
-	float			half_width = half_height * aspect_ratio;
-	float			world_y;
-	float			world_x;
-	int				x;
-	int				y;
-
-	ray.origin = create_point(0, 0, -5);
-	y = 0;
-	while (y < HEIGHT)
-	{
-		world_y = half_height - pixel_size * y;
-		x = 0;
-		while (x < WIDTH)
-		{
-			world_x = -half_width + pixel_size * x;
-			target = create_point(world_x, world_y, wall_z);
-			ray.direction = normalize(subtract_tuple(target, ray.origin));
-			color = color_at(world, ray);
-			free_intersection(&world->intersections);
-			free_intersection(&world->shadow_intersections);
-			pixel_put(data, x, y, color);
-			x++;
-		}
-		y++;
-	}
+	if (world->err == DIAMETER)
+		write(2, "diameter needs to be > 0\n", 25);
+	if (world->err == HEIGHT_ERROR)
+		write(2, "height needs to be > 0\n", 23);
+	if (world->err == OBJECT_COUNT)
+		write(2, "too many objects in scene, max 999\n", 35);
 }
 
-
-int main(void)
+void	parsing_exit_message(t_world *world)
 {
-	t_data				data;
+	if (world->exit_code)
+		write(2, "Error\n", 6);
+	if (world->err == GNL)
+		perror("gnl error");
+	else if (world->err == CLOSE)
+		perror("close error");
+	else if (world->err == INC_FORMAT)
+		write(2, "incorrect format in file\n", 25);
+	else if (world->err == l_identifier)
+		write(2, "too many lights in .rt\n", 23);
+	else if (world->err == a_identifier)
+		write(2, "too many ambient light objects in .rt\n", 38);
+	else if (world->err == c_identifier)
+		write(2, "too many camera's in .rt\n", 25);
+	else if (world->err == no_a || world->err == no_l)
+		write(2, "no (ambient) lighting in .rt\n", 29);
+	else if (world->err == no_c)
+		write(2, "no camera in .rt\n", 17);
+	else if (world->err == OBJECT)
+		write(2, "error in allocation for object\n", 31);
+	else if (world->err == LIGHT)
+		write(2, "error in allocation for light\n", 30);
+	else if (world->err == NORMAL)
+		write(2, "vector not normalized\n", 22);
+	parsing_exit_message2(world);
+}
+
+void	parsing_exit(t_world *world)
+{
+	parsing_exit_message(world);
+	if (world->exit_code)
+	{
+		free_objects(&world->objects);
+		free_lights(&world->lights);
+		exit(world->exit_code);
+	}
+	return ;
+}
+
+int	main(int argc, char **argv)
+{
+	t_mlx				mlx_data;
 	t_world				world;
-	t_object			*sphere;
-	t_object			*cylinder;
-	t_transformation	transformation;
-	t_object			*plane;
-	t_object			*plane2;
-	t_ray				ray;
 
-	transformation.scale = scale_matrix(0.9, 0.9, 0.9);
-	transformation.translation = translation_matrix(-1, -0.6, 5);
-	transformation.rotate = create_identity_matrix();
-	sphere = new_object(create_point(0, 0, 0), 1, default_material(), new_object_base(SPHERE, transformation_matrix(transformation)));
-	if (!sphere)
+	ft_bzero(&world, sizeof(t_world));
+	parse(&world, argc, argv);
+	parsing_exit(&world);
+	ft_bzero(&mlx_data, sizeof(t_mlx));
+	if (!init_mlx(&mlx_data))
+	{
+		free_objects(&world.objects);
 		return (1);
-
-	free_transformation_matrix(&transformation);
-	transformation.scale = create_identity_matrix();
-	transformation.translation = translation_matrix(0, -1.5, 0);
-	transformation.rotate = create_identity_matrix();
-	plane = new_object(create_point(0,0,0), 0, default_material(), new_object_base(PLANE, transformation_matrix(transformation)));
-	if (!plane)
-		return (2);
-
-	free_transformation_matrix(&transformation);
-	transformation.scale = create_identity_matrix();
-	transformation.translation = translation_matrix(0, 100, 0);
-	transformation.rotate = rotate(M_PI / 2, 0, 0);
-	plane2 = new_object(create_point(0,0,0), 0, default_material(), new_object_base(PLANE, transformation_matrix(transformation)));
-	if (!plane2)
-		return (2);
-
-	free_transformation_matrix(&transformation);
-	transformation.scale = scale_matrix(1, 1, 1);
-	transformation.translation = translation_matrix(1, -2, 8);
-	transformation.rotate = rotate(0, 0, 0);
-	cylinder = new_object(create_point(0,0,0), 0, default_material(), new_object_base(CYLINDER, transformation_matrix(transformation)));
-	if (!plane)
-		return (2);
-	free_transformation_matrix(&transformation);
-
-	sphere->material.color = new_color(1.0, 0.6, 0.8);
-	plane->material.color = new_color(0.2, 0.6, 0.6);
-	plane2->material.color = new_color(0.2, 0.6, 0.6);
-	cylinder->material.color = new_color(0.3, 0.5, 0.8);
-	cylinder->cyl_max = 3;
-	cylinder->cyl_min = 0;
-	cylinder->cyl_capped = true;
-	plane->material.ambient = 0.6;
-	plane->material.diffuse = 0.3;
-	plane->material.specular = 0.3;
-	world.shapes = NULL;
-	add_shape_to_list(&world.shapes, sphere);
-	add_shape_to_list(&world.shapes, plane);
-	add_shape_to_list(&world.shapes, plane2);
-	add_shape_to_list(&world.shapes, cylinder);
-	
-	world.light = new_light(create_point(-10, 20, -50), new_color(1, 1, 1));
-
-	world.intersections = NULL;
-	world.shadow_intersections = NULL;
-
-	ray.direction = create_vector(0,0,1);
-	ray.origin = create_point(0, 0, -5);
-
-	if (!init_mlx(&data))
-		return (1);
-	hooks(&data);
-	render(&data, &world);
-	mlx_put_image_to_window(data.mlx, data.window, data.image, 0, 0);
-	mlx_loop(data.mlx);
-	free_mlx(&data);
-
-	free_shapes(&world.shapes);
+	}
+	mlx_data.world = &world;
+	world.mlx_data = &mlx_data;
+	hooks(&mlx_data);
+	debugger(BLU "\nstart render\n"RESET);
+	render(&mlx_data, world.cam, &world);
+	printf("DONE\n");
+	mlx_put_image_to_window(mlx_data.mlx, \
+	mlx_data.window, mlx_data.img1.image, 0, 0);
+	mlx_loop(mlx_data.mlx);
+	free_mlx(&mlx_data);
+	free_lights(&world.lights);
+	free_objects(&world.objects);
 }

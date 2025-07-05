@@ -6,13 +6,28 @@
 /*   By: marieke <marieke@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 13:16:49 by maraasve          #+#    #+#             */
-/*   Updated: 2024/10/02 13:27:15 by marieke          ###   ########.fr       */
+/*   Updated: 2025/07/05 12:18:10 by marieke          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tuples.h"
+#include <minirt.h>
+#include <calculations.h>
+#include <libft.h>
+#include <stdarg.h>
 
-float	ft_abs(float a)
+void	debugger(char *format, ...)
+{
+	va_list	ptr;
+
+	if (DEBUG == 1)
+	{
+		va_start(ptr, format);
+		vdprintf(2, format, ptr);
+		va_end(ptr);
+	}
+}
+
+float	ft_fabs(float a)
 {
 	if (a < 0)
 		return (-a);
@@ -21,17 +36,15 @@ float	ft_abs(float a)
 
 bool	equal_float(float a, float b)
 {
-	if (ft_abs(a - b) > EPSILON)
+	if (ft_fabs(a - b) > EPSILON)
 		return (false);
 	return (true);
 }
 
-long long	millitimestamp(void)
+float	degrees_to_radians(float degrees)
 {
-	struct timeval	timeval;
-	long long		microtime;
+	float	radians;
 
-	gettimeofday(&timeval, NULL);
-	microtime = timeval.tv_sec * 1000LL + timeval.tv_usec / 1000;
-	return (microtime);
+	radians = degrees * M_PI / 180;
+	return (radians);
 }

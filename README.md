@@ -37,8 +37,13 @@ make bonus
 ### ▶️ Run the program
 
 ```bash
-./minirt ./maps/H2O.rt
+./minirt <map.rt>
 ```
+```bash
+./minirt_bonus <map.rt>
+```
+
+### ▶️ Demo
 
 ```bash
 ./minirt_bonus ./maps/bonus/multi_lights.rt
